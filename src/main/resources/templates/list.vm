@@ -1,0 +1,64 @@
+<html>
+<head>
+    <title>Epic DashBoards</title>
+    <meta name="decorator" content="atl.general">
+    <script>
+        AJS.$(document).ready(function() {
+            jQuery('.delete-issue').click(function() {
+                console.log('deleting');
+                var self = jQuery(this);
+                jQuery.ajax({
+                    type: "delete",
+                    url: "issuecrud?key=" + self.data("key"),
+                    success: function(data) {
+                        console.log('dom', self, data);
+                        self.parent().parent().remove();
+                    },
+                    error: function() {
+                        console.log('error', arguments);
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+</head>
+<body class="page-type-admin">
+<div class="content-container">
+
+    <div class="content-body">
+        <h1>
+        #if($issues.size()==0)
+            No Epics created.
+        #else
+            Epic List
+        #end</h1>
+
+        #if ($issues.size() > 0)
+            <div class="issues">
+                <table class="aui">
+                    <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Summary</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        #foreach( $issue in $issues )
+                        <tr>
+                            <td>
+                                $issue.getKey()
+                            </td>
+                            <td>
+                                $issue.getSummary()
+                            </td>
+                        </tr>
+                        #end
+                    </tbody>
+                </table>
+            </div>
+        #end
+    </div>
+</div>
+</body>
+</html>

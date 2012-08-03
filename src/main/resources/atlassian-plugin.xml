@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+  </plugin-info>
+  <resource type="i18n" name="i18n" location="es.testingserver.atlassian.epicstats"/>
+  <web-section name="epic-section" i18n-name-key="epic-section.name" key="epic-section" location="epic-stats-link" weight="1000">
+    <description key="epic-section.description">Epic Section Plugin</description>
+  </web-section>
+  <web-item name="Epic Stats" i18n-name-key="epic-stats.name" key="epic-stats" section="system.top.navigation.bar" weight="1000">
+    <description key="epic-stats.description">Epic Stats Plugin</description>
+    <label key="epic-stats.label"/>
+    <link linkId="epic-stats-link">/plugins/servlet/epicstats</link>
+  </web-item>
+  <web-item name="Roadmap" i18n-name-key="epic-roadmap.name" key="epic-roadmap" section="epic-stats-link/epic-section" weight="1000">
+    <description key="epic-roadmap.description">Roadmap</description>
+    <label key="epic-roadmap.label"/>
+    <link linkId="epic-roadmap-link">/plugins/servlet/epicstats</link>
+  </web-item>
+  <servlet name="Epic Stats" i18n-name-key="epic-stats-servlet.name" key="epic-stats-servlet" class="es.testingserver.atlassian.epicstats.EpicStats">
+    <description key="epic-stats-servlet.description">The Epic Stats Plugin</description>
+    <url-pattern>/epicstats</url-pattern>
+  </servlet>
+  <component-import key="templateRenderer" interface="com.atlassian.templaterenderer.TemplateRenderer" filter=""/>
+  <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager" filter=""/>
+</atlassian-plugin>
