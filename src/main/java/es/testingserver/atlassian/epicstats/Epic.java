@@ -1,12 +1,5 @@
 package es.testingserver.atlassian.epicstats;
 
-/**
- * Created with IntelliJ IDEA.
- * User: nino
- * Date: 3/08/12
- * Time: 14:54
- * To change this template use File | Settings | File Templates.
- */
 public class Epic
 {
     protected String _summary;

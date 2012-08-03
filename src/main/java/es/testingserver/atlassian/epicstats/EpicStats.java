@@ -1,6 +1,5 @@
 package es.testingserver.atlassian.epicstats;
 
-
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.issue.IssueService;
 import com.atlassian.jira.bc.issue.search.SearchService;
@@ -48,34 +47,39 @@ public class EpicStats extends HttpServlet{
     }
 
 
-    private User getCurrentUser(HttpServletRequest req) {
-        // To get the current user, we first get the username from the session.
-        // Then we pass that over to the jiraUserManager in order to get an
-        // actual User object.
+    private User getCurrentUser(HttpServletRequest req)
+	{
         return jiraUserManager.getUser(userManager.getRemoteUsername(req));
     }
 
     private List<Issue> getEpics(HttpServletRequest req) {
         // User is required to carry out a search
         User user = getCurrentUser(req);
+
         // The search interface requires JQL clause... so let's build one
         JqlClauseBuilder jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
-        // Our JQL clause is simple project="TUTORIAL"
+
+        // JQL Clause:
         com.atlassian.query.Query query = jqlClauseBuilder.project("WEB").
                 and().issueTypeIsStandard().
                 and().issueType().in("Epic").
                 buildQuery();
+
         // A page filter is used to provide pagination. Let's use an unlimited filter to
         // to bypass pagination.
         PagerFilter pagerFilter = PagerFilter.getUnlimitedFilter();
         com.atlassian.jira.issue.search.SearchResults searchResults = null;
-        try {
+
+        try
+		{
             // Perform search results
             searchResults = searchService.search(user, query, pagerFilter);
-        } catch (SearchException e) {
+        }
+		catch (SearchException e)
+		{
             e.printStackTrace();
         }
-        // return the results
+
         return searchResults.getIssues();
     }
 
