@@ -1,4 +1,4 @@
-package es.testingserver.atlassian.epicstats;
+package es.testingserver.atlassian.entities;
 
 public class Epic
 {

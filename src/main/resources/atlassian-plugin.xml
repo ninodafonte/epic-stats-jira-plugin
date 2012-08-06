@@ -26,4 +26,9 @@
   </servlet>
   <component-import key="templateRenderer" interface="com.atlassian.templaterenderer.TemplateRenderer" filter=""/>
   <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager" filter=""/>
+  <component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider" />
+
+    <servlet  class="es.testingserver.atlassian.epicstats.EpicStatsAdmin">
+        <url-pattern>/xproduct/admin</url-pattern>
+    </servlet>
 </atlassian-plugin>

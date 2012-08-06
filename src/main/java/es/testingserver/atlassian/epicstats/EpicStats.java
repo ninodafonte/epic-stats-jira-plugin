@@ -16,6 +16,7 @@ import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.common.collect.Maps;
+import es.testingserver.atlassian.entities.Epic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
