@@ -4,7 +4,11 @@ import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.issue.IssueService;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.bc.project.ProjectService;
+import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.issue.CustomFieldManager;
 import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.issue.fields.CustomField;
+import com.atlassian.jira.issue.label.Label;
 import com.atlassian.jira.issue.search.SearchException;
 import com.atlassian.jira.jql.builder.JqlClauseBuilder;
 import com.atlassian.jira.jql.builder.JqlQueryBuilder;
@@ -21,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +37,10 @@ public class EpicStats extends HttpServlet{
     private UserManager userManager;
     private TemplateRenderer templateRenderer;
     private com.atlassian.jira.user.util.UserManager jiraUserManager;
+    private JqlClauseBuilder jqlClauseBuilder = null;
+    private CustomField epicField = null;
+    private CustomField storyPoints = null;
+    private String filterLabel = null;
     private static final String LIST_BROWSER_TEMPLATE = "/templates/list.vm";
 
     public EpicStats(IssueService issueService, ProjectService projectService,
@@ -44,6 +53,15 @@ public class EpicStats extends HttpServlet{
         this.userManager = userManager;
         this.templateRenderer = templateRenderer;
         this.jiraUserManager = jiraUserManager;
+        this.jqlClauseBuilder = null;
+
+        CustomFieldManager customFieldManager =
+                ComponentAccessor.getCustomFieldManager();
+
+        this.epicField =
+                customFieldManager.getCustomFieldObjectByName( "Epic/Theme" );
+        this.storyPoints =
+                customFieldManager.getCustomFieldObjectByName( "Story Points" );
     }
 
 
@@ -57,13 +75,27 @@ public class EpicStats extends HttpServlet{
         User user = getCurrentUser(req);
 
         // The search interface requires JQL clause... so let's build one
-        JqlClauseBuilder jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
+        jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
 
-        // JQL Clause:
-        com.atlassian.query.Query query = jqlClauseBuilder.project("WEB").
-                and().issueTypeIsStandard().
-                and().issueType().in("Epic").
-                buildQuery();
+        com.atlassian.query.Query query = null;
+
+        if ( this.filterLabel != null )
+        {
+            // JQL Clause:
+            query = jqlClauseBuilder.project("WEB").
+                    and().issueTypeIsStandard().
+                    and().issueType().in("Epic").
+                    and().labels(this.filterLabel).
+                    buildQuery();
+        }
+        else
+        {
+            // JQL Clause:
+            query = jqlClauseBuilder.project("WEB").
+                    and().issueTypeIsStandard().
+                    and().issueType().in("Epic").
+                    buildQuery();
+        }
 
         // A page filter is used to provide pagination. Let's use an unlimited filter to
         // to bypass pagination.
@@ -83,15 +115,70 @@ public class EpicStats extends HttpServlet{
         return searchResults.getIssues();
     }
 
-    private List<Epic> processEpics( List<Issue> issues )
+    private List<Epic> processEpics( List<Issue> issues, HttpServletRequest req )
     {
+        User user = getCurrentUser(req);
         List<Epic> processedIssues = new ArrayList<Epic>();
+
         for( Issue item : issues )
         {
-            Epic temp = new Epic();
-            temp.setKey(item.getKey());
-            temp.setSummary(item.getSummary());
-            processedIssues.add( temp );
+            Object epicValue = item.getCustomFieldValue( epicField );
+            if ( epicValue != null )
+            {
+                List<Label> epics = new ArrayList<Label>(
+                        (Collection<Label>) epicValue
+                );
+
+                String epicLabel = epics.get(0).getLabel();
+
+                // JQL Clause:
+                jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
+
+
+                // JQL Clause:
+                com.atlassian.query.Query query = jqlClauseBuilder.project("WEB").
+                        and().issueTypeIsStandard().
+                        and().issueType().in("Story").
+                        and().customField(epicField.getIdAsLong()).eq(epicLabel).
+                        buildQuery();
+
+                PagerFilter pagerFilter = PagerFilter.getUnlimitedFilter();
+                com.atlassian.jira.issue.search.SearchResults searchResults = null;
+
+                try
+                {
+                    // Perform search results
+                    searchResults = searchService.search(user, query, pagerFilter);
+                }
+                catch (SearchException e)
+                {
+                    e.printStackTrace();
+                }
+
+                double totalStoryPoints = 0;
+                double burnedStoryPoints = 0;
+
+                List<Issue> stories = searchResults.getIssues();
+                for ( Issue story : stories )
+                {
+                    Double spValue = (Double) story.getCustomFieldValue( storyPoints );
+                    if ( spValue != null )
+                    {
+                        totalStoryPoints += spValue;
+                        if ( story.getStatusObject().getName().equals("Closed" ) )
+                        {
+                            burnedStoryPoints += spValue;
+                        }
+                    }
+                }
+
+                Epic temp = new Epic();
+                temp.setKey(item.getKey());
+                temp.setSummary(item.getSummary());
+                temp.setTotalStoryPoints(totalStoryPoints);
+                temp.setBurnedStoryPoints(burnedStoryPoints);
+                processedIssues.add( temp );
+            }
         }
 
         return processedIssues;
@@ -105,11 +192,15 @@ public class EpicStats extends HttpServlet{
     {
         Map<String, Object> context = Maps.newHashMap();
 
+        // Get filter param:
+        this.filterLabel = req.getParameter("label");
+
         // Get Epics Info:
         List<Issue> issues = getEpics(req);
-        List<Epic> processedEpics = this.processEpics( issues );
+        List<Epic> processedEpics = this.processEpics( issues, req );
 
         // Set template context:
+        context.put( "cfEpic", epicField.getIdAsLong() );
         context.put( "issues", processedEpics );
         resp.setContentType("text/html;charset=utf-8");
 

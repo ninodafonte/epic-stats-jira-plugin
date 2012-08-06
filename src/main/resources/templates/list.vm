@@ -27,12 +27,14 @@
 <div class="content-container">
 
     <div class="content-body">
+        <header>
         <h1>
         #if($issues.size()==0)
             No Epics created.
         #else
             Epic List
         #end</h1>
+        </header>
 
         #if ($issues.size() > 0)
             <div class="issues">
@@ -41,16 +43,28 @@
                     <tr>
                         <th>Key</th>
                         <th>Summary</th>
+                        <th>Total Story Points</th>
+                        <th>Burned Story Points</th>
+                        <th>Total Complete</th>
                     </tr>
                     </thead>
                     <tbody>
                         #foreach( $issue in $issues )
                         <tr>
                             <td>
-                                $issue.getKey()
+                                <a class="lozenge" href="/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=cf%5B$cfEpic%5D+%3D+$issue.getKey()" title="$issue.getKey()"><span>$issue.getKey()</span></a>
                             </td>
                             <td>
                                 $issue.getSummary()
+                            </td>
+                            <td>
+                                $issue.getTotalStoryPoints()
+                            </td>
+                            <td>
+                                $issue.getBurnedStoryPoints()
+                            </td>
+                            <td>
+                                $issue.getPercentComplete() %
                             </td>
                         </tr>
                         #end

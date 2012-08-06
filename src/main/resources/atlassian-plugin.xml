@@ -18,7 +18,7 @@
   <web-item name="Roadmap" i18n-name-key="epic-roadmap.name" key="epic-roadmap" section="epic-stats-link/epic-section" weight="1000">
     <description key="epic-roadmap.description">Roadmap</description>
     <label key="epic-roadmap.label"/>
-    <link linkId="epic-roadmap-link">/plugins/servlet/epicstats</link>
+    <link linkId="epic-roadmap-link">/plugins/servlet/epicstats?label=Roadmap</link>
   </web-item>
   <servlet name="Epic Stats" i18n-name-key="epic-stats-servlet.name" key="epic-stats-servlet" class="es.testingserver.atlassian.epicstats.EpicStats">
     <description key="epic-stats-servlet.description">The Epic Stats Plugin</description>
