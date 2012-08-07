@@ -6,7 +6,7 @@
     <version>${project.version}</version>
     <vendor name="${project.organization.name}" url="${project.organization.url}"/>
   </plugin-info>
-  <resource type="i18n" name="i18n" location="es.testingserver.atlassian.epicstats"/>
+  <resource type="i18n" name="i18n" location="es.testingserver.atlassian.epicstats.epicstats"/>
   <web-section name="epic-section" i18n-name-key="epic-section.name" key="epic-section" location="epic-stats-link" weight="1000">
     <description key="epic-section.description">Epic Section Plugin</description>
   </web-section>
@@ -20,15 +20,40 @@
     <label key="epic-roadmap.label"/>
     <link linkId="epic-roadmap-link">/plugins/servlet/epicstats?label=Roadmap</link>
   </web-item>
-  <servlet name="Epic Stats" i18n-name-key="epic-stats-servlet.name" key="epic-stats-servlet" class="es.testingserver.atlassian.epicstats.EpicStats">
-    <description key="epic-stats-servlet.description">The Epic Stats Plugin</description>
-    <url-pattern>/epicstats</url-pattern>
-  </servlet>
-  <component-import key="templateRenderer" interface="com.atlassian.templaterenderer.TemplateRenderer" filter=""/>
-  <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager" filter=""/>
-  <component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider" />
 
-    <servlet  class="es.testingserver.atlassian.epicstats.EpicStatsAdmin">
-        <url-pattern>/xproduct/admin</url-pattern>
+
+    <web-item key="jira-menu-item" name="Epic Dashboard Admin" section="system.admin/globalsettings" weight="10" application="jira">
+        <description>Link to Epic Dashboard Admin page.</description>
+        <label key="epicstats.admin.label" />
+        <link linkId="epicstats-admin-link">/plugins/servlet/epicstats/admin</link>
+    </web-item>
+
+    <web-resource name="Admin Web Resources" key="resources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="admin.js" location="admin.js"/>
+    </web-resource>
+
+    <template-context-item key="applicationPropertiesContextItem" component-ref="applicationProperties" context-key="applicationProperties" name="Application Properties Context Item"/>
+
+    <servlet name="Epic Stats" i18n-name-key="epic-stats-servlet.name" key="epic-stats-servlet" class="es.testingserver.atlassian.epicstats.EpicStats">
+        <description key="epic-stats-servlet.description">The Epic Stats Plugin</description>
+        <url-pattern>/epicstats</url-pattern>
     </servlet>
+
+    <servlet name="Epic Stats Admin" i18n-name-key="epic-stats-admin-servlet.name" key="epic-stats-admin-servlet" class="es.testingserver.atlassian.epicstats.EpicStatsAdmin">
+        <description key="epic-stats-admin-servlet.description">The Epic Stats Admin Plugin</description>
+        <url-pattern>/epicstats/admin</url-pattern>
+    </servlet>
+
+    <component-import key="templateRenderer" interface="com.atlassian.templaterenderer.TemplateRenderer" filter=""/>
+    <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager" filter=""/>
+    <component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider" />
+    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />
+    <component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
+    <component-import key="transactionTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate" />
+
+    <rest key="rest" path="/epicstats-admin" version="1.0">
+        <description>Provides REST resources for the admin UI.</description>
+    </rest>
+
 </atlassian-plugin>
