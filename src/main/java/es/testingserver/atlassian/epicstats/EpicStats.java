@@ -41,6 +41,8 @@ public class EpicStats extends HttpServlet{
     private JqlClauseBuilder jqlClauseBuilder = null;
     private CustomField epicField = null;
     private CustomField storyPoints = null;
+    private double globalTotalStoryPoints = 0;
+    private double globalBurnedStoryPoints = 0;
     private String filterLabel = null;
     private static final String LIST_BROWSER_TEMPLATE = "/templates/list.vm";
 
@@ -80,24 +82,17 @@ public class EpicStats extends HttpServlet{
         jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
 
         com.atlassian.query.Query query = null;
+        jqlClauseBuilder = jqlClauseBuilder.project("WEB").
+                and().issueTypeIsStandard().
+                and().issueType().in("Epic");
 
         if ( this.filterLabel != null )
         {
-            // JQL Clause:
-            query = jqlClauseBuilder.project("WEB").
-                    and().issueTypeIsStandard().
-                    and().issueType().in("Epic").
-                    and().labels(this.filterLabel).
-                    buildQuery();
+            // JQL Filter Clause:
+            jqlClauseBuilder = jqlClauseBuilder.and().labels(this.filterLabel);
         }
-        else
-        {
-            // JQL Clause:
-            query = jqlClauseBuilder.project("WEB").
-                    and().issueTypeIsStandard().
-                    and().issueType().in("Epic").
-                    buildQuery();
-        }
+
+        query = jqlClauseBuilder.buildQuery();
 
         // A page filter is used to provide pagination. Let's use an unlimited filter to
         // to bypass pagination.
@@ -121,7 +116,8 @@ public class EpicStats extends HttpServlet{
     {
         User user = getCurrentUser(req);
         List<Epic> processedIssues = new ArrayList<Epic>();
-
+        this.globalTotalStoryPoints = 0;
+        this.globalBurnedStoryPoints = 0;
         for( Issue item : issues )
         {
             Object epicValue = item.getCustomFieldValue( epicField );
@@ -180,6 +176,10 @@ public class EpicStats extends HttpServlet{
                 temp.setTotalStoryPoints(totalStoryPoints);
                 temp.setBurnedStoryPoints(burnedStoryPoints);
                 processedIssues.add( temp );
+
+                // Sum all the epics:
+                globalTotalStoryPoints += totalStoryPoints;
+                globalBurnedStoryPoints += burnedStoryPoints;
             }
         }
 
@@ -204,6 +204,8 @@ public class EpicStats extends HttpServlet{
         // Set template context:
         context.put( "cfEpic", epicField.getIdAsLong() );
         context.put( "issues", processedEpics );
+        context.put( "totalStoryPoints", globalTotalStoryPoints );
+        context.put( "burnedStoryPoints", globalBurnedStoryPoints );
         resp.setContentType("text/html;charset=utf-8");
 
         // Pass in the list of issues as the context

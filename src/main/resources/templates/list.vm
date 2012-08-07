@@ -70,6 +70,8 @@
                         #end
                     </tbody>
                 </table>
+                <p>Total SP: <strong>$totalStoryPoints</strong></p>
+                <p>Burned SP: <strong>$burnedStoryPoints</strong></p>
             </div>
         #end
     </div>
