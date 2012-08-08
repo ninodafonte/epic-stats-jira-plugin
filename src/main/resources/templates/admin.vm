@@ -7,13 +7,63 @@
 </head>
 <body>
 <form id="admin" class="aui">
-    <div>
-        <label for="name">$i18n.getText("epicstats.admin.name.label")</label>
-        <input type="text" id="name" name="name" class="text">
+    <div class="field-group">
+        <label for="project">$i18n.getText("epicstats.admin.project.label")</label>
+        <select id="project" name="project">
+            <option value="Choose one">Choose one</option>
+            #foreach( $project in $projects )
+                <option value="$project.getKey()">$project.getName()</option>
+            #end
+        </select>
     </div>
-    <div>
-        <label for="time">$i18n.getText("epicstats.admin.time.label")</label>
-        <input type="text" id="time" name="time" class="text">
+    <div class="field-group">
+        <label for="epicIssueType">$i18n.getText("epicstats.admin.epic.label")</label>
+        <select id="epicIssueType" name="epicIssueType">
+            <option value="Choose one">Choose one</option>
+            #foreach( $issueType in $issueTypes )
+                <option value="$issueType.getName()">$issueType.getName()</option>
+            #end
+        </select>
+    </div>
+    <div class="field-group">
+        <label for="storyIssueType">$i18n.getText("epicstats.admin.story.label")</label>
+        <select id="storyIssueType" name="storyIssueType">
+            <option value="Choose one">Choose one</option>
+            #foreach( $issueType in $issueTypes )
+                <option value="$issueType.getName()">$issueType.getName()</option>
+            #end
+        </select>
+    </div>
+    <div class="field-group">
+        <label for="storyPointsField">$i18n.getText("epicstats.admin.storypoints.label")</label>
+        <select id="storyPointsField" name="storyPointsField">
+            <option value="Choose one">Choose one</option>
+            #foreach( $issueField in $issueFields )
+                <option value="$issueField.getName()">$issueField.getName()</option>
+            #end
+        </select>
+    </div>
+    <div class="field-group">
+        <label for="epicField">$i18n.getText("epicstats.admin.epicrelated.label")</label>
+        <select id="epicField" name="epicField">
+            <option value="Choose one">Choose one</option>
+            #foreach( $issueField in $issueFields )
+                <option value="$issueField.getName()">$issueField.getName()</option>
+            #end
+        </select>
+    </div>
+    <div class="field-group">
+        <label for="doneStatus">$i18n.getText("epicstats.admin.donestatus.label")</label>
+        <select id="doneStatus" name="doneStatus">
+            <option value="Choose one">Choose one</option>
+            #foreach( $issueStatus in $issueStatuses )
+                <option value="$issueStatus.getName()">$issueStatus.getName()</option>
+            #end
+        </select>
+    </div>
+    <div class="field-group">
+        <label for="roadmapLabel">$i18n.getText("epicstats.admin.roadmap.label")</label>
+        <input type="text" id="roadmapLabel" name="roadmapLabel">
     </div>
     <div>
         <input type="submit" value="$i18n.getText("epicstats.admin.save.label")" class="button">

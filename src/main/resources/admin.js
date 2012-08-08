@@ -6,8 +6,13 @@ AJS.toInit(function() {
             url: baseUrl + "/rest/epicstats-admin/1.0/",
             dataType: "json",
             success: function(config) {
-                AJS.$("#name").attr("value", config.name);
-                AJS.$("#time").attr("value", config.time);
+                AJS.$("#project").attr("value", config.project);
+                AJS.$("#epicIssueType").attr("value", config.epicIssueType);
+                AJS.$("#storyIssueType").attr("value", config.storyIssueType);
+                AJS.$("#storyPointsField").attr("value", config.storyPointsField);
+                AJS.$("#epicField").attr("value", config.epicField);
+                AJS.$("#doneStatus").attr("value", config.doneStatus);
+                AJS.$("#roadmapLabel").attr("value", config.roadmapLabel);
             }
         });
     }
@@ -17,7 +22,14 @@ AJS.toInit(function() {
             url: baseUrl + "/rest/epicstats-admin/1.0/",
             type: "PUT",
             contentType: "application/json",
-            data: '{ "name": "' + AJS.$("#name").attr("value") + '", "time": ' +  AJS.$("#time").attr("value") + ' }',
+            data: '{ "project": "' + AJS.$("#project").attr("value") + '"' +
+                ', "epicIssueType": "' +  AJS.$("#epicIssueType").attr("value") + '"' +
+                ', "storyIssueType": "' +  AJS.$("#storyIssueType").attr("value") + '"' +
+                ', "storyPointsField": "' +  AJS.$("#storyPointsField").attr("value") + '"' +
+                ', "epicField": "' +  AJS.$("#epicField").attr("value") + '"' +
+                ', "doneStatus": "' +  AJS.$("#doneStatus").attr("value") + '"' +
+                ', "roadmapLabel": "' +  AJS.$("#roadmapLabel").attr("value") + '"' +
+                ' }',
             processData: false
         });
     }

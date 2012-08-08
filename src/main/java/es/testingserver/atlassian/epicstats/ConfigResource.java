@@ -32,28 +32,80 @@ public class ConfigResource
     public static final class Config
     {
         @XmlElement
-        private String name;
+        private String project;
+
         @XmlElement
-        private int time;
+        private String epicIssueType;
 
-        public String getName()
-        {
-            return name;
+        @XmlElement
+        private String storyIssueType;
+
+        @XmlElement
+        private String storyPointsField;
+
+        @XmlElement
+        private String epicField;
+
+        @XmlElement
+        private String doneStatus;
+
+        @XmlElement
+        private String roadmapLabel;
+
+        public String getProject() {
+            return project;
         }
 
-        public void setName(String name)
-        {
-            this.name = name;
+        public void setProject(String project) {
+            this.project = project;
         }
 
-        public int getTime()
-        {
-            return time;
+        public String getEpicIssueType() {
+            return epicIssueType;
         }
 
-        public void setTime(int time)
-        {
-            this.time = time;
+        public void setEpicIssueType(String epicIssueType) {
+            this.epicIssueType = epicIssueType;
+        }
+
+        public String getStoryIssueType() {
+            return storyIssueType;
+        }
+
+        public void setStoryIssueType(String storyIssueType) {
+            this.storyIssueType = storyIssueType;
+        }
+
+        public String getStoryPointsField() {
+            return storyPointsField;
+        }
+
+        public void setStoryPointsField(String storyPointsField) {
+            this.storyPointsField = storyPointsField;
+        }
+
+        public String getEpicField() {
+            return epicField;
+        }
+
+        public void setEpicField(String epicField) {
+            this.epicField = epicField;
+        }
+
+        public String getDoneStatus() {
+            return doneStatus;
+        }
+
+        public void setDoneStatus(String doneStatus) {
+            this.doneStatus = doneStatus;
+        }
+
+        public String getRoadmapLabel() {
+            return roadmapLabel;
+        }
+
+        public void setRoadmapLabel(String roadmapLabel) {
+            this.roadmapLabel = roadmapLabel;
         }
     }
 
@@ -72,12 +124,13 @@ public class ConfigResource
             public Object doInTransaction() {
                 PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
                 Config config = new Config();
-                config.setName((String) settings.get(Config.class.getName() + ".name"));
-
-                String time = (String) settings.get(Config.class.getName() + ".time");
-                if (time != null) {
-                    config.setTime(Integer.parseInt(time));
-                }
+                config.setProject((String) settings.get(Config.class.getName() + ".project"));
+                config.setEpicIssueType((String) settings.get(Config.class.getName() + ".epicIssueType"));
+                config.setStoryIssueType((String) settings.get(Config.class.getName() + ".storyIssueType"));
+                config.setStoryPointsField((String) settings.get(Config.class.getName() + ".storyPointsField"));
+                config.setEpicField((String) settings.get(Config.class.getName() + ".epicField"));
+                config.setDoneStatus((String) settings.get(Config.class.getName() + ".doneStatus"));
+                config.setRoadmapLabel((String) settings.get(Config.class.getName() + ".roadmapLabel"));
                 return config;
             }
         })).build();
@@ -99,8 +152,13 @@ public class ConfigResource
             public Object doInTransaction()
             {
                 PluginSettings pluginSettings = pluginSettingsFactory.createGlobalSettings();
-                pluginSettings.put(Config.class.getName() + ".name", config.getName());
-                pluginSettings.put(Config.class.getName()  +".time", Integer.toString(config.getTime()));
+                pluginSettings.put(Config.class.getName() + ".project", config.getProject());
+                pluginSettings.put(Config.class.getName()  +".epicIssueType", config.getEpicIssueType());
+                pluginSettings.put(Config.class.getName()  +".storyIssueType", config.getStoryIssueType());
+                pluginSettings.put(Config.class.getName()  +".storyPointsField", config.getStoryPointsField());
+                pluginSettings.put(Config.class.getName()  +".epicField", config.getEpicField());
+                pluginSettings.put(Config.class.getName()  +".doneStatus", config.getDoneStatus());
+                pluginSettings.put(Config.class.getName()  +".roadmapLabel", config.getRoadmapLabel());
                 return null;
             }
         });
