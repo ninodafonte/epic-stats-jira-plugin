@@ -18,7 +18,7 @@
   <web-item name="Roadmap" i18n-name-key="epic-roadmap.name" key="epic-roadmap" section="epic-stats-link/epic-section" weight="1000">
     <description key="epic-roadmap.description">Roadmap</description>
     <label key="epic-roadmap.label"/>
-    <link linkId="epic-roadmap-link">/plugins/servlet/epicstats?label=Roadmap</link>
+    <link linkId="epic-roadmap-link">/plugins/servlet/epicstats?filtered=on</link>
   </web-item>
 
 

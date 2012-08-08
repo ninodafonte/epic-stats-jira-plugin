@@ -50,6 +50,7 @@ public class EpicStats extends HttpServlet{
     private String storyPointsField = null;
     private String epicRelatedField = null;
     private String doneStatus = null;
+    private String filtered = null;
     private static final String LIST_BROWSER_TEMPLATE = "/templates/list.vm";
 
     public EpicStats(IssueService issueService, ProjectService projectService,
@@ -84,7 +85,7 @@ public class EpicStats extends HttpServlet{
                 and().issueTypeIsStandard().
                 and().issueType().in( this.epicIssueType );
 
-        if ( this.filterLabel != null )
+        if ( this.filtered != null )
         {
             // JQL Filter Clause:
             jqlClauseBuilder = jqlClauseBuilder.and().labels(this.filterLabel);
@@ -192,7 +193,7 @@ public class EpicStats extends HttpServlet{
     {
 
         // Configuration read from Admin Plugin Section in Jira:
-        this.readPluginConfiguration();
+        this.readPluginConfiguration( req );
 
         // Get Epics Info:
         List<Issue> issues = getEpics(req);
@@ -214,11 +215,12 @@ public class EpicStats extends HttpServlet{
         );
     }
 
-    private void readPluginConfiguration()
+    private void readPluginConfiguration( HttpServletRequest req )
     {
         CustomFieldManager customFieldManager =
                 ComponentAccessor.getCustomFieldManager();
 
+        this.filtered = req.getParameter("filtered");
         this.project = "Web";
         this.epicIssueType = "Epic";
         this.storyIssueType = "Story";
