@@ -13,6 +13,8 @@ import com.atlassian.jira.issue.search.SearchException;
 import com.atlassian.jira.jql.builder.JqlClauseBuilder;
 import com.atlassian.jira.jql.builder.JqlQueryBuilder;
 import com.atlassian.jira.web.bean.PagerFilter;
+import com.atlassian.sal.api.pluginsettings.PluginSettings;
+import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.common.collect.Maps;
@@ -52,11 +54,18 @@ public class EpicStats extends HttpServlet{
     private String doneStatus = null;
     private String filtered = null;
     private static final String LIST_BROWSER_TEMPLATE = "/templates/list.vm";
+    private final PluginSettingsFactory pluginSettingsFactory;
 
-    public EpicStats(IssueService issueService, ProjectService projectService,
-                     SearchService searchService, UserManager userManager,
-                     com.atlassian.jira.user.util.UserManager jiraUserManager,
-                     TemplateRenderer templateRenderer) {
+    public EpicStats (
+            IssueService issueService,
+            ProjectService projectService,
+            SearchService searchService,
+            UserManager userManager,
+            com.atlassian.jira.user.util.UserManager jiraUserManager,
+            TemplateRenderer templateRenderer,
+            PluginSettingsFactory pluginSettingsFactory
+    )
+    {
         this.issueService = issueService;
         this.projectService = projectService;
         this.searchService = searchService;
@@ -64,6 +73,7 @@ public class EpicStats extends HttpServlet{
         this.templateRenderer = templateRenderer;
         this.jiraUserManager = jiraUserManager;
         this.jqlClauseBuilder = null;
+        this.pluginSettingsFactory = pluginSettingsFactory;
     }
 
 
@@ -191,7 +201,6 @@ public class EpicStats extends HttpServlet{
             HttpServletResponse resp
     ) throws ServletException, IOException
     {
-
         // Configuration read from Admin Plugin Section in Jira:
         this.readPluginConfiguration( req );
 
@@ -217,21 +226,49 @@ public class EpicStats extends HttpServlet{
 
     private void readPluginConfiguration( HttpServletRequest req )
     {
+        PluginSettings settings =
+                this.pluginSettingsFactory.createGlobalSettings();
+
         CustomFieldManager customFieldManager =
                 ComponentAccessor.getCustomFieldManager();
 
+        String pluginNameSpace = ConfigResource.Config.class.getName();
         this.filtered = req.getParameter("filtered");
-        this.project = "Web";
-        this.epicIssueType = "Epic";
-        this.storyIssueType = "Story";
-        this.storyPointsField = "Story Points";
-        this.epicRelatedField = "Epic/Theme";
-        this.doneStatus = "Closed";
-        this.filterLabel = "Roadmap";
 
-        this.epicField =
-                customFieldManager.getCustomFieldObjectByName( this.epicRelatedField );
-        this.storyPoints =
-                customFieldManager.getCustomFieldObjectByName( this.storyPointsField );
+        this.project = settings.get(
+                pluginNameSpace + ".project"
+        ).toString();
+
+        this.epicIssueType = settings.get(
+            pluginNameSpace + ".epicIssueType"
+        ).toString();
+
+        this.storyIssueType = settings.get(
+            pluginNameSpace + ".storyIssueType"
+        ).toString();
+
+        this.storyPointsField = settings.get(
+            pluginNameSpace + ".storyPointsField"
+        ).toString();
+
+        this.epicRelatedField = settings.get(
+            pluginNameSpace + ".epicField"
+        ).toString();
+
+        this.doneStatus = settings.get(
+            pluginNameSpace + ".doneStatus"
+        ).toString();
+
+        this.filterLabel = settings.get(
+            pluginNameSpace + ".roadmapLabel"
+        ).toString();
+
+        this.epicField = customFieldManager.getCustomFieldObjectByName(
+            this.epicRelatedField
+        );
+
+        this.storyPoints = customFieldManager.getCustomFieldObjectByName(
+            this.storyPointsField
+        );
     }
 }

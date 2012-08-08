@@ -6,13 +6,14 @@
     $webResourceManager.requireResource("es.testingserver.atlassian.epicstats:resources")
 </head>
 <body>
+<div id="aui-message-bar"></div>
 <form id="admin" class="aui">
     <div class="field-group">
         <label for="project">$i18n.getText("epicstats.admin.project.label")</label>
         <select id="project" name="project">
             <option value="Choose one">Choose one</option>
             #foreach( $project in $projects )
-                <option value="$project.getKey()">$project.getName()</option>
+                <option value="$project.getKey()" #if ($selProject == $project.getKey() ) selected="selected" #end>$project.getName()</option>
             #end
         </select>
     </div>
@@ -21,7 +22,7 @@
         <select id="epicIssueType" name="epicIssueType">
             <option value="Choose one">Choose one</option>
             #foreach( $issueType in $issueTypes )
-                <option value="$issueType.getName()">$issueType.getName()</option>
+                <option value="$issueType.getName()" #if ($selEpicIssueType == $issueType.getName() ) selected="selected" #end>$issueType.getName()</option>
             #end
         </select>
     </div>
@@ -30,7 +31,7 @@
         <select id="storyIssueType" name="storyIssueType">
             <option value="Choose one">Choose one</option>
             #foreach( $issueType in $issueTypes )
-                <option value="$issueType.getName()">$issueType.getName()</option>
+                <option value="$issueType.getName()" #if ($selStoryIssueType == $issueType.getName() ) selected="selected" #end>$issueType.getName()</option>
             #end
         </select>
     </div>
@@ -39,7 +40,7 @@
         <select id="storyPointsField" name="storyPointsField">
             <option value="Choose one">Choose one</option>
             #foreach( $issueField in $issueFields )
-                <option value="$issueField.getName()">$issueField.getName()</option>
+                <option value="$issueField.getName()" #if ($selStoryPointsField == $issueField.getName() ) selected="selected" #end>$issueField.getName()</option>
             #end
         </select>
     </div>
@@ -48,7 +49,7 @@
         <select id="epicField" name="epicField">
             <option value="Choose one">Choose one</option>
             #foreach( $issueField in $issueFields )
-                <option value="$issueField.getName()">$issueField.getName()</option>
+                <option value="$issueField.getName()" #if ($selEpicField == $issueField.getName() ) selected="selected" #end>$issueField.getName()</option>
             #end
         </select>
     </div>
@@ -57,13 +58,13 @@
         <select id="doneStatus" name="doneStatus">
             <option value="Choose one">Choose one</option>
             #foreach( $issueStatus in $issueStatuses )
-                <option value="$issueStatus.getName()">$issueStatus.getName()</option>
+                <option value="$issueStatus.getName()" #if ($selDoneStatus == $issueStatus.getName() ) selected="selected" #end>$issueStatus.getName()</option>
             #end
         </select>
     </div>
     <div class="field-group">
         <label for="roadmapLabel">$i18n.getText("epicstats.admin.roadmap.label")</label>
-        <input type="text" id="roadmapLabel" name="roadmapLabel">
+        <input type="text" id="roadmapLabel" name="roadmapLabel" value="$selRoadmapLabel">
     </div>
     <div>
         <input type="submit" value="$i18n.getText("epicstats.admin.save.label")" class="button">

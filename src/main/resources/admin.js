@@ -1,22 +1,6 @@
 AJS.toInit(function() {
     var baseUrl = AJS.$("meta[name='application-base-url']").attr("content");
 
-    function populateForm() {
-        AJS.$.ajax({
-            url: baseUrl + "/rest/epicstats-admin/1.0/",
-            dataType: "json",
-            success: function(config) {
-                AJS.$("#project").attr("value", config.project);
-                AJS.$("#epicIssueType").attr("value", config.epicIssueType);
-                AJS.$("#storyIssueType").attr("value", config.storyIssueType);
-                AJS.$("#storyPointsField").attr("value", config.storyPointsField);
-                AJS.$("#epicField").attr("value", config.epicField);
-                AJS.$("#doneStatus").attr("value", config.doneStatus);
-                AJS.$("#roadmapLabel").attr("value", config.roadmapLabel);
-            }
-        });
-    }
-
     function updateConfig() {
         AJS.$.ajax({
             url: baseUrl + "/rest/epicstats-admin/1.0/",
@@ -30,15 +14,26 @@ AJS.toInit(function() {
                 ', "doneStatus": "' +  AJS.$("#doneStatus").attr("value") + '"' +
                 ', "roadmapLabel": "' +  AJS.$("#roadmapLabel").attr("value") + '"' +
                 ' }',
-            processData: false
+            processData: false,
+            success: function(data) {
+                var message = AJS.messages.success(
+                    '#aui-message-bar',
+                    {
+                        title:"Epic Dashboard Configuration",
+                        body: "<p>Config saved!</p>"
+                    }
+                );
+
+                setTimeout( function()
+                {
+                    AJS.$('#aui-message-bar').html('');
+                }, 5000 );
+            }
         });
     }
-
-    populateForm();
 
     AJS.$("#admin").submit(function(e) {
         e.preventDefault();
         updateConfig();
     });
-
 });
