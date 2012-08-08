@@ -85,7 +85,7 @@ public class EpicStats extends HttpServlet{
                 and().issueTypeIsStandard().
                 and().issueType().in( this.epicIssueType );
 
-        if ( this.filtered != null )
+        if ( ( this.filtered != null ) && ( this.filterLabel.length() > 0 ) )
         {
             // JQL Filter Clause:
             jqlClauseBuilder = jqlClauseBuilder.and().labels(this.filterLabel);
