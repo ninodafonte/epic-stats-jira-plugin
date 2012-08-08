@@ -44,6 +44,12 @@ public class EpicStats extends HttpServlet{
     private double globalTotalStoryPoints = 0;
     private double globalBurnedStoryPoints = 0;
     private String filterLabel = null;
+    private String project = null;
+    private String epicIssueType = null;
+    private String storyIssueType = null;
+    private String storyPointsField = null;
+    private String epicRelatedField = null;
+    private String doneStatus = null;
     private static final String LIST_BROWSER_TEMPLATE = "/templates/list.vm";
 
     public EpicStats(IssueService issueService, ProjectService projectService,
@@ -57,14 +63,6 @@ public class EpicStats extends HttpServlet{
         this.templateRenderer = templateRenderer;
         this.jiraUserManager = jiraUserManager;
         this.jqlClauseBuilder = null;
-
-        CustomFieldManager customFieldManager =
-                ComponentAccessor.getCustomFieldManager();
-
-        this.epicField =
-                customFieldManager.getCustomFieldObjectByName( "Epic/Theme" );
-        this.storyPoints =
-                customFieldManager.getCustomFieldObjectByName( "Story Points" );
     }
 
 
@@ -82,9 +80,9 @@ public class EpicStats extends HttpServlet{
         jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
 
         com.atlassian.query.Query query = null;
-        jqlClauseBuilder = jqlClauseBuilder.project("WEB").
+        jqlClauseBuilder = jqlClauseBuilder.project( this.project ).
                 and().issueTypeIsStandard().
-                and().issueType().in("Epic");
+                and().issueType().in( this.epicIssueType );
 
         if ( this.filterLabel != null )
         {
@@ -134,9 +132,9 @@ public class EpicStats extends HttpServlet{
 
 
                 // JQL Clause:
-                com.atlassian.query.Query query = jqlClauseBuilder.project("WEB").
+                com.atlassian.query.Query query = jqlClauseBuilder.project( this.project ).
                         and().issueTypeIsStandard().
-                        and().issueType().in("Story").
+                        and().issueType().in(this.storyIssueType).
                         and().customField(epicField.getIdAsLong()).eq(epicLabel).
                         buildQuery();
 
@@ -163,7 +161,7 @@ public class EpicStats extends HttpServlet{
                     if ( spValue != null )
                     {
                         totalStoryPoints += spValue;
-                        if ( story.getStatusObject().getName().equals("Closed" ) )
+                        if ( story.getStatusObject().getName().equals( this.doneStatus ) )
                         {
                             burnedStoryPoints += spValue;
                         }
@@ -192,16 +190,16 @@ public class EpicStats extends HttpServlet{
             HttpServletResponse resp
     ) throws ServletException, IOException
     {
-        Map<String, Object> context = Maps.newHashMap();
 
-        // Get filter param:
-        this.filterLabel = req.getParameter("label");
+        // Configuration read from Admin Plugin Section in Jira:
+        this.readPluginConfiguration();
 
         // Get Epics Info:
         List<Issue> issues = getEpics(req);
         List<Epic> processedEpics = this.processEpics( issues, req );
 
         // Set template context:
+        Map<String, Object> context = Maps.newHashMap();
         context.put( "cfEpic", epicField.getIdAsLong() );
         context.put( "issues", processedEpics );
         context.put( "totalStoryPoints", globalTotalStoryPoints );
@@ -214,5 +212,24 @@ public class EpicStats extends HttpServlet{
                 context,
                 resp.getWriter()
         );
+    }
+
+    private void readPluginConfiguration()
+    {
+        CustomFieldManager customFieldManager =
+                ComponentAccessor.getCustomFieldManager();
+
+        this.project = "Web";
+        this.epicIssueType = "Epic";
+        this.storyIssueType = "Story";
+        this.storyPointsField = "Story Points";
+        this.epicRelatedField = "Epic/Theme";
+        this.doneStatus = "Closed";
+        this.filterLabel = "Roadmap";
+
+        this.epicField =
+                customFieldManager.getCustomFieldObjectByName( this.epicRelatedField );
+        this.storyPoints =
+                customFieldManager.getCustomFieldObjectByName( this.storyPointsField );
     }
 }
