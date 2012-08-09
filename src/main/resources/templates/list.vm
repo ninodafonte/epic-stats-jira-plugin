@@ -50,10 +50,9 @@
                             #set($imagemapWithHtml = $issue.getImageMap())
                             #if ( "$!im" != "" )
                                 $imagemapWithHtml
-                                <img src='/charts?filename=$issue.getChartName()' border='0' usemap="\#$issue.getImageMapName()" />
+                                <img src='$applicationProperties.getBaseUrl()/charts?filename=$issue.getChartName()' border='0' usemap="\#$issue.getImageMapName()" />
                             #end
                         </div>
-
                         <div class="clear">
                             <table class="aui">
                                 <thead>

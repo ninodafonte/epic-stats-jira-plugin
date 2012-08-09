@@ -214,7 +214,6 @@ public class EpicStats extends HttpServlet{
 
         // Set template context:
         Map<String, Object> context = Maps.newHashMap();
-
         context.put( "cfEpic", epicField.getIdAsLong() );
         context.put( "issues", processedEpics );
         context.put( "filtered", this.filtered );
@@ -222,7 +221,6 @@ public class EpicStats extends HttpServlet{
         context.put( "totalStoryPoints", globalTotalStoryPoints );
         context.put( "burnedStoryPoints", globalBurnedStoryPoints );
         resp.setContentType("text/html;charset=utf-8");
-
 
         // Pass in the list of issues as the context
         templateRenderer.render(
