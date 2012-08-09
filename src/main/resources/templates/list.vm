@@ -2,28 +2,9 @@
 <head>
     <title>Epic DashBoards</title>
     <meta name="decorator" content="atl.general">
-    <script>
-        AJS.$(document).ready(function() {
-            jQuery('.delete-issue').click(function() {
-                console.log('deleting');
-                var self = jQuery(this);
-                jQuery.ajax({
-                    type: "delete",
-                    url: "issuecrud?key=" + self.data("key"),
-                    success: function(data) {
-                        console.log('dom', self, data);
-                        self.parent().parent().remove();
-                    },
-                    error: function() {
-                        console.log('error', arguments);
-                    }
-                });
-                return false;
-            });
-        });
-    </script>
+    $webResourceManager.requireResource("es.testingserver.atlassian.epicstats:resourcesCss")
 </head>
-<body class="page-type-admin">
+<body>
 <div class="content-container">
 
     <div class="content-body">
@@ -32,54 +13,69 @@
         #if($issues.size()==0)
             No Epics created.
         #else
-            Epic List
-        #end</h1>
-        </header>
+            Epic Dashboard#if ( $filtered && "$!filterLabel" != "" )<strong>: $filterLabel</strong>#end
+        #end
+        </h1>
+            <div class="module">
+                <div class="mod-header"><h3 class="toggle-title">Totals</h3></div>
+                <div class="mod-content">
+                    <ul id="issuedetails" class="property-list two-cols">
+                        <li class="item">
+                            <div class="wrap">
+                                <strong class="name">Total Story Points: </strong><span class="value">$totalStoryPoints</span>
+                            </div>
+                        </li>
+                        <li class="item">
+                            <div class="wrap">
+                                <strong class="name">Burned Story Points: </strong><span class="value">$burnedStoryPoints</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
 
+            </div>
+        </header>
+        <div class="module">
+            <div class="mod-header"><h3 class="toggle-title">Details</h3></div>
+        </div>
         #if ($issues.size() > 0)
             <div class="issues">
-                <table class="aui">
-                    <thead>
-                    <tr>
-                        <th>Key</th>
-                        <th>Summary</th>
-                        <th>Total Story Points</th>
-                        <th>Burned Story Points</th>
-                        <th>Total Complete</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        #foreach( $issue in $issues )
-                        <tr>
-                            <td>
-                                <a class="lozenge" href="/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=cf%5B$cfEpic%5D+%3D+$issue.getKey()" title="$issue.getKey()"><span>$issue.getKey()</span></a>
-                            </td>
-                            <td>
-                                $issue.getSummary()
-                            </td>
-                            <td>
-                                $issue.getTotalStoryPoints()
-                            </td>
-                            <td>
-                                $issue.getBurnedStoryPoints()
-                            </td>
-                            <td>
-                                $issue.getPercentComplete() %
-                            </td>
-                            <td>
-                                #set($im = $issue.getImageMap())
-                                #set($imagemapWithHtml = $issue.getImageMap())
-                                #if ( "$!im" != "" )
+                #foreach( $issue in $issues )
+                    <div class="content-body aui-panel epic-fixed-width">
+                        <div>
+                            <h2><a class="lozenge" href="/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=cf%5B$cfEpic%5D+%3D+$issue.getKey()" title="$issue.getKey()"><span>$issue.getKey()</span></a>: $issue.getSummary()</h2>
+                        </div>
+                        <div class=".epic-chart">
+                            #set($im = $issue.getImageMap())
+                            #set($imagemapWithHtml = $issue.getImageMap())
+                            #if ( "$!im" != "" )
                                 $imagemapWithHtml
                                 <img src='/jira/charts?filename=$issue.getChartName()' border='0' usemap="\#$issue.getImageMapName()" />
-                                #end
-                            </td>
-                        </tr>
-                        #end
-                    </tbody>
-                </table>
-                <p>Total SP: <strong>$totalStoryPoints</strong></p>
-                <p>Burned SP: <strong>$burnedStoryPoints</strong></p>
+                            #end
+                        </div>
+
+                        <div class="clear">
+                            <table class="aui">
+                                <thead>
+                                    <th>Total Story Points</th>
+                                    <th>Burned Story Points</th>
+                                    <th>Complete</th>
+                                </thead>
+                                <tbody>
+                                    <td>
+                                        $issue.getTotalStoryPoints()
+                                    </td>
+                                    <td>
+                                        $issue.getBurnedStoryPoints()
+                                    </td>
+                                    <td>
+                                        $issue.getPercentComplete() %
+                                    </td>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                #end
             </div>
         #end
     </div>
