@@ -43,14 +43,16 @@
                 #foreach( $issue in $issues )
                     <div class="content-body aui-panel epic-fixed-width">
                         <div>
-                            <h2><a class="lozenge" href="/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=cf%5B$cfEpic%5D+%3D+$issue.getKey()" title="$issue.getKey()"><span>$issue.getKey()</span></a>: $issue.getSummary()</h2>
+                            <h2><a class="lozenge" href="/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=cf%5B$cfEpic%5D+%3D+$issue.getKey()" title="$issue.getKey()"><span>$issue.getKey()</span></a>: <span class="black-text">$issue.getSummary()</span></h2>
                         </div>
                         <div class=".epic-chart">
                             #set($im = $issue.getImageMap())
                             #set($imagemapWithHtml = $issue.getImageMap())
                             #if ( "$!im" != "" )
                                 $imagemapWithHtml
-                                <img src='$applicationProperties.getBaseUrl()/charts?filename=$issue.getChartName()' border='0' usemap="\#$issue.getImageMapName()" />
+                                #if ( "$!issue.getChartName()" != "" )
+                                    <img src='$applicationProperties.getBaseUrl()/charts?filename=$issue.getChartName()' border='0' usemap="\#$issue.getImageMapName()" />
+                                #end
                             #end
                         </div>
                         <div class="clear">

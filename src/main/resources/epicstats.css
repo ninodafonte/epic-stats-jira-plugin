@@ -1,0 +1,18 @@
+.epic-fixed-width {
+    width: 400px;
+    height: 220px;
+    margin: 10px !important;
+    float: left;
+}
+
+.epic-chart {
+    float: left;
+}
+
+.epic-clear {
+    clear: left;
+}
+
+.black-text {
+    color: #000000;
+}
