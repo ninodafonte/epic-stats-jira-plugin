@@ -66,6 +66,14 @@
                             <td>
                                 $issue.getPercentComplete() %
                             </td>
+                            <td>
+                                #set($im = $issue.getImageMap())
+                                #set($imagemapWithHtml = $issue.getImageMap())
+                                #if ( "$!im" != "" )
+                                $imagemapWithHtml
+                                <img src='/jira/charts?filename=$issue.getChartName()' border='0' usemap="\#$issue.getImageMapName()" />
+                                #end
+                            </td>
                         </tr>
                         #end
                     </tbody>

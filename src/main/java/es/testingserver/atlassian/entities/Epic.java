@@ -1,11 +1,17 @@
 package es.testingserver.atlassian.entities;
 
+import com.atlassian.jira.charts.Chart;
+import es.testingserver.atlassian.helpers.ChartGenerator;
+
+import java.util.Map;
+
 public class Epic
 {
     protected String _summary;
     protected String _key;
     protected double _totalStoryPoints;
     protected double _burnedStoryPoints;
+    protected Map<String, Object> chartParams = null;
 
     public String getSummary() {
         return _summary;
@@ -41,5 +47,41 @@ public class Epic
 
     public int getPercentComplete() {
         return (int) (( this._burnedStoryPoints / this._totalStoryPoints ) * 100);
+    }
+
+    public void generateChart( double totalSp, double burnedSp )
+    {
+        final Chart chart = ChartGenerator.getChart( totalSp, burnedSp );
+        this.chartParams = chart.getParameters();
+    }
+
+    public String getImageMapName()
+    {
+        String im = null;
+        if ( this.chartParams != null && this.chartParams.get("imagemapName") != null )
+        {
+            im = (String ) this.chartParams.get("imagemapName");
+        }
+        return im;
+    }
+
+    public String getImageMap()
+    {
+        String im = null;
+        if ( this.chartParams != null && this.chartParams.get("imagemap") != null )
+        {
+            im = (String ) this.chartParams.get("imagemap");
+        }
+        return im;
+    }
+
+    public String getChartName()
+    {
+        String im = null;
+        if ( this.chartParams != null && this.chartParams.get("chart") != null )
+        {
+            im = (String ) this.chartParams.get("chart");
+        }
+        return im;
     }
 }
