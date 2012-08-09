@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>es.testingserver.atlassian</groupId>
     <artifactId>epicstats</artifactId>
-    <version>0.1</version>
+    <version>1.0</version>
     <organization>
         <name>Splendia Operations</name>
         <url>http://www.splendia.com/</url>
