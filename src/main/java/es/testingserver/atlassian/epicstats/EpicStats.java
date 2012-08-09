@@ -79,7 +79,6 @@ public class EpicStats extends HttpServlet{
 
     private User getCurrentUser(HttpServletRequest req)
 	{
-
         return jiraUserManager.getUser(userManager.getRemoteUsername(req));
     }
 
