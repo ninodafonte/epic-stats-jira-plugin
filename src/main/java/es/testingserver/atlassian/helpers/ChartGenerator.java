@@ -21,8 +21,8 @@ public class ChartGenerator {
         {
             Map<String, Object> params = Maps.newHashMap();
             DefaultPieDataset dataset = new DefaultPieDataset();
-            dataset.setValue( "Total SP", totalSp );
-            dataset.setValue( "Burned SP", burnedSp );
+            dataset.setValue( "To do", totalSp - burnedSp );
+            dataset.setValue( "Done", burnedSp );
             I18nHelper i18nBean = ComponentAccessor.getJiraAuthenticationContext().getI18nHelper();
             final ChartHelper helper = new PieChartGenerator(dataset, i18nBean).generateChart();
             helper.generate(400, 100);
