@@ -3,19 +3,29 @@
     <title>Epic DashBoards</title>
     <meta name="decorator" content="atl.general">
     $webResourceManager.requireResource("es.testingserver.atlassian.epicstats:resourcesCss")
+    $webResourceManager.requireResource("es.testingserver.atlassian.epicstats:resourcesListJs")
 </head>
 <body>
 <div class="content-container">
-
     <div class="content-body">
         <header>
-        <h1>
-        #if($issues.size()==0)
-            No Epics created.
-        #else
-            Epic Dashboard#if ( $filtered && "$!filterLabel" != "" )<strong>: $filterLabel</strong>#end
-        #end
-        </h1>
+            <h1>
+                #if($issues.size()==0)
+                    No Epics created.
+                #else
+                    Epic Dashboard#if ( ( $filtered ) && ( "$!filterLabel" != "" ) )<strong>: $filterLabel</strong>#end
+                #end
+            </h1>
+
+            <div id="epic-filter-dropdown" class="aui-dd-parent aui-list">
+                <a href="#" class="aui-dd-trigger lnk filter-icon standard"><span class="link-filter">Filter Epics</span></a>
+                <ul class="aui-dropdown aui-list-section">
+                    <li class="aui-list-item"><a class="aui-list-item-link" href="$applicationProperties.getBaseUrl()/plugins/servlet/epicstats">All</a></li>
+                    <li class="aui-list-item"><a class="aui-list-item-link" href="$applicationProperties.getBaseUrl()/plugins/servlet/epicstats?filtered=on&filterJql=labels+%3D+Roadmap">Roadmap</a></li>
+                    <li class="aui-list-item"><a class="aui-list-item-link" href="$applicationProperties.getBaseUrl()/plugins/servlet/epicstats?filtered=on&filterJql=component+%3D+Back2Europe">Back2Europe</a></li>
+                </ul>
+            </div>
+
             <div class="module">
                 <div class="mod-header"><h3 class="toggle-title">Totals</h3></div>
                 <div class="mod-content">
@@ -43,7 +53,7 @@
                 #foreach( $issue in $issues )
                     <div class="content-body aui-panel epic-fixed-width">
                         <div>
-                            <h2><a class="lozenge" href="/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=cf%5B$cfEpic%5D+%3D+$issue.getKey()" title="$issue.getKey()"><span>$issue.getKey()</span></a>: <span class="black-text">$issue.getSummary()</span></h2>
+                            <h2><a class="lozenge" href="$applicationProperties.getBaseUrl()/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=cf%5B$cfEpic%5D+%3D+$issue.getKey()" title="$issue.getKey()"><span>$issue.getKey()</span></a>: <span class="black-text">$issue.getSummary()</span></h2>
                         </div>
                         <div class=".epic-chart">
                             #set($im = $issue.getImageMap())

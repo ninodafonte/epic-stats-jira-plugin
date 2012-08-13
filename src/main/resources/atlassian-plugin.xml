@@ -7,20 +7,12 @@
     <vendor name="${project.organization.name}" url="${project.organization.url}"/>
   </plugin-info>
   <resource type="i18n" name="i18n" location="es.testingserver.atlassian.epicstats.epicstats"/>
-  <web-section name="epic-section" i18n-name-key="epic-section.name" key="epic-section" location="epic-stats-link" weight="1000">
-    <description key="epic-section.description">Epic Section Plugin</description>
-  </web-section>
-  <web-item name="Epic Stats" i18n-name-key="epic-stats.name" key="epic-stats" section="system.top.navigation.bar" weight="1000">
-    <description key="epic-stats.description">Epic Stats Plugin</description>
-    <label key="epic-stats.label"/>
-    <link linkId="epic-stats-link">/plugins/servlet/epicstats</link>
-  </web-item>
-  <web-item name="Roadmap" i18n-name-key="epic-roadmap.name" key="epic-roadmap" section="epic-stats-link/epic-section" weight="1000">
-    <description key="epic-roadmap.description">Roadmap</description>
-    <label key="epic-roadmap.label"/>
-    <link linkId="epic-roadmap-link">/plugins/servlet/epicstats?filtered=on</link>
-  </web-item>
 
+    <web-item name="Epic Stats" i18n-name-key="epic-stats.name" key="epic-stats" section="system.top.navigation.bar" weight="1000">
+        <description key="epic-stats.description">Epic Stats Plugin</description>
+        <label key="epic-stats.label"/>
+        <link linkId="epic-stats-link">/plugins/servlet/epicstats</link>
+    </web-item>
 
     <web-item key="jira-menu-item" name="Epic Dashboard Admin" section="system.admin/globalsettings" weight="10" application="jira">
         <description>Link to Epic Dashboard Admin page.</description>
@@ -31,6 +23,11 @@
     <web-resource name="Admin Web JS Resources" key="resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <resource type="download" name="admin.js" location="admin.js"/>
+    </web-resource>
+
+    <web-resource name="List JS Resources" key="resourcesListJs">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="list.js" location="list.js"/>
     </web-resource>
 
     <web-resource name="Epic Dashboard Css Resources" key="resourcesCss">

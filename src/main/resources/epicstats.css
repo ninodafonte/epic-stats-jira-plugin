@@ -16,3 +16,29 @@
 .black-text {
     color: #000000;
 }
+
+#epic-filter-dropdown {
+    float: right;
+}
+
+#epic-filter-dropdown a.aui-dd-trigger, #epic-filter-dropdown  div.aui-dd-parent {
+    text-indent: 0px !important;
+    width: 100px;
+}
+
+.filter-icon {
+    background: url('/s/en_UK-ntbj79/713/3/1.0/_/download/resources/jira.webresources:util-lite/../../../images/icons/ico_filters.png') no-repeat 2px 2px !important;
+    padding-left: 2.2em !important;
+    height: 25px !important;
+}
+
+.link-filter
+{
+    display: block;
+    background-position: 97% 55%;
+    background-color: transparent;
+    color: #333;
+    float: left;
+    font-size: 1.1em;
+    padding: 3px 7px 0px 0px;
+}

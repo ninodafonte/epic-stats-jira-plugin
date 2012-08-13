@@ -1,9 +1,7 @@
 package es.testingserver.atlassian.epicstats;
 
 import com.atlassian.crowd.embedded.api.User;
-import com.atlassian.jira.bc.issue.IssueService;
 import com.atlassian.jira.bc.issue.search.SearchService;
-import com.atlassian.jira.bc.project.ProjectService;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.CustomFieldManager;
 import com.atlassian.jira.issue.Issue;
@@ -13,6 +11,7 @@ import com.atlassian.jira.issue.search.SearchException;
 import com.atlassian.jira.jql.builder.JqlClauseBuilder;
 import com.atlassian.jira.jql.builder.JqlQueryBuilder;
 import com.atlassian.jira.web.bean.PagerFilter;
+import com.atlassian.query.Query;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.user.UserManager;
@@ -34,8 +33,6 @@ import java.util.Map;
 
 public class EpicStats extends HttpServlet{
     private static final Logger log = LoggerFactory.getLogger(EpicStats.class);
-    private IssueService issueService;
-    private ProjectService projectService;
     private SearchService searchService;
     private UserManager userManager;
     private TemplateRenderer templateRenderer;
@@ -45,20 +42,16 @@ public class EpicStats extends HttpServlet{
     private CustomField storyPoints = null;
     private double globalTotalStoryPoints = 0;
     private double globalBurnedStoryPoints = 0;
-    private String filterLabel = null;
+    private String filterJql = null;
     private String project = null;
     private String epicIssueType = null;
     private String storyIssueType = null;
-    private String storyPointsField = null;
-    private String epicRelatedField = null;
     private String doneStatus = null;
     private String filtered = null;
     private static final String LIST_BROWSER_TEMPLATE = "/templates/list.vm";
     private final PluginSettingsFactory pluginSettingsFactory;
 
     public EpicStats (
-            IssueService issueService,
-            ProjectService projectService,
             SearchService searchService,
             UserManager userManager,
             com.atlassian.jira.user.util.UserManager jiraUserManager,
@@ -66,8 +59,6 @@ public class EpicStats extends HttpServlet{
             PluginSettingsFactory pluginSettingsFactory
     )
     {
-        this.issueService = issueService;
-        this.projectService = projectService;
         this.searchService = searchService;
         this.userManager = userManager;
         this.templateRenderer = templateRenderer;
@@ -94,31 +85,46 @@ public class EpicStats extends HttpServlet{
                 and().issueTypeIsStandard().
                 and().issueType().in( this.epicIssueType );
 
-        if ( ( this.filtered != null ) && ( this.filterLabel.length() > 0 ) )
+        if ( ( this.filtered != null ) && ( this.filterJql.length() > 0 ) )
         {
             // JQL Filter Clause:
-            jqlClauseBuilder = jqlClauseBuilder.and().labels(this.filterLabel);
+            String jqlQuery = this.filterJql;
+            SearchService.ParseResult parseResult = searchService.parseQuery(
+                    user,
+                    jqlQuery
+            );
+
+            if (parseResult.isValid()){
+                Query extraQuery = parseResult.getQuery();
+                jqlClauseBuilder = jqlClauseBuilder.and().addClause(
+                        extraQuery.getWhereClause()
+                );
+            }
         }
 
         query = jqlClauseBuilder.buildQuery();
 
-        // A page filter is used to provide pagination. Let's use an unlimited filter to
-        // to bypass pagination.
+        // A page filter is used to provide pagination.
+        // Let's use an unlimited filter to bypass pagination.
         PagerFilter pagerFilter = PagerFilter.getUnlimitedFilter();
         com.atlassian.jira.issue.search.SearchResults searchResults = null;
+
+        List<Issue> result = null;
 
         try
 		{
             // Perform search results
             searchResults = searchService.search(user, query, pagerFilter);
+            result = searchResults.getIssues();
         }
 		catch (SearchException e)
 		{
             e.printStackTrace();
         }
 
-        return searchResults.getIssues();
+        return result;
     }
+
 
     private List<Epic> processEpics( List<Issue> issues, HttpServletRequest req )
     {
@@ -217,7 +223,7 @@ public class EpicStats extends HttpServlet{
         context.put( "cfEpic", epicField.getIdAsLong() );
         context.put( "issues", processedEpics );
         context.put( "filtered", this.filtered );
-        context.put( "filterLabel", this.filterLabel );
+        context.put( "filterJql", this.filterJql );
         context.put( "totalStoryPoints", globalTotalStoryPoints );
         context.put( "burnedStoryPoints", globalBurnedStoryPoints );
         resp.setContentType("text/html;charset=utf-8");
@@ -254,11 +260,11 @@ public class EpicStats extends HttpServlet{
             pluginNameSpace + ".storyIssueType"
         ).toString();
 
-        this.storyPointsField = settings.get(
+        String storyPointsField = settings.get(
             pluginNameSpace + ".storyPointsField"
         ).toString();
 
-        this.epicRelatedField = settings.get(
+        String epicRelatedField = settings.get(
             pluginNameSpace + ".epicField"
         ).toString();
 
@@ -266,16 +272,14 @@ public class EpicStats extends HttpServlet{
             pluginNameSpace + ".doneStatus"
         ).toString();
 
-        this.filterLabel = settings.get(
-            pluginNameSpace + ".roadmapLabel"
-        ).toString();
+        this.filterJql = req.getParameter( "filterJql" );
 
         this.epicField = customFieldManager.getCustomFieldObjectByName(
-            this.epicRelatedField
+            epicRelatedField
         );
 
         this.storyPoints = customFieldManager.getCustomFieldObjectByName(
-            this.storyPointsField
+            storyPointsField
         );
     }
 }
