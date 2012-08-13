@@ -18,6 +18,7 @@ import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.common.collect.Maps;
 import es.testingserver.atlassian.entities.Epic;
+import es.testingserver.atlassian.entities.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -80,7 +82,7 @@ public class EpicStats extends HttpServlet{
         // The search interface requires JQL clause... so let's build one
         jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
 
-        com.atlassian.query.Query query = null;
+        com.atlassian.query.Query query;
         jqlClauseBuilder = jqlClauseBuilder.project( this.project ).
                 and().issueTypeIsStandard().
                 and().issueType().in( this.epicIssueType );
@@ -107,7 +109,7 @@ public class EpicStats extends HttpServlet{
         // A page filter is used to provide pagination.
         // Let's use an unlimited filter to bypass pagination.
         PagerFilter pagerFilter = PagerFilter.getUnlimitedFilter();
-        com.atlassian.jira.issue.search.SearchResults searchResults = null;
+        com.atlassian.jira.issue.search.SearchResults searchResults;
 
         List<Issue> result = null;
 
@@ -126,6 +128,7 @@ public class EpicStats extends HttpServlet{
     }
 
 
+    @SuppressWarnings("unchecked")
     private List<Epic> processEpics( List<Issue> issues, HttpServletRequest req )
     {
         User user = getCurrentUser(req);
@@ -155,12 +158,15 @@ public class EpicStats extends HttpServlet{
                         buildQuery();
 
                 PagerFilter pagerFilter = PagerFilter.getUnlimitedFilter();
-                com.atlassian.jira.issue.search.SearchResults searchResults = null;
+                com.atlassian.jira.issue.search.SearchResults searchResults;
+
+                List<Issue> result = new ArrayList<Issue>();
 
                 try
                 {
                     // Perform search results
                     searchResults = searchService.search(user, query, pagerFilter);
+                    result = searchResults.getIssues();
                 }
                 catch (SearchException e)
                 {
@@ -170,7 +176,7 @@ public class EpicStats extends HttpServlet{
                 double totalStoryPoints = 0;
                 double burnedStoryPoints = 0;
 
-                List<Issue> stories = searchResults.getIssues();
+                List<Issue> stories = result;
                 for ( Issue story : stories )
                 {
                     Double spValue = (Double) story.getCustomFieldValue( storyPoints );
@@ -226,6 +232,7 @@ public class EpicStats extends HttpServlet{
         context.put( "filterJql", this.filterJql );
         context.put( "totalStoryPoints", globalTotalStoryPoints );
         context.put( "burnedStoryPoints", globalBurnedStoryPoints );
+        context.put( "filters", loadFilters() );
         resp.setContentType("text/html;charset=utf-8");
 
 
@@ -235,6 +242,27 @@ public class EpicStats extends HttpServlet{
                 context,
                 resp.getWriter()
         );
+    }
+
+    private List<Filter> loadFilters() throws IOException
+    {
+        List<Filter> filters = new ArrayList<Filter>();
+        String name, jql;
+
+        for ( int i = 1; i < 6; i++ )
+        {
+            name = loadSetting(".filterName".concat(Integer.toString(i)));
+            jql = loadSetting(".filterJql".concat(Integer.toString(i)));
+            if ( (name != null) && (jql != null) && !name.isEmpty() && !jql.isEmpty() )
+            {
+                Filter temp = new Filter();
+                temp.setName( name );
+                temp.setJql(URLEncoder.encode(jql, "UTF-8"));
+                filters.add( temp );
+            }
+        }
+
+        return filters;
     }
 
     private void readPluginConfiguration( HttpServletRequest req )
@@ -281,5 +309,28 @@ public class EpicStats extends HttpServlet{
         this.storyPoints = customFieldManager.getCustomFieldObjectByName(
             storyPointsField
         );
+    }
+
+    // TODO: Refactor - Duplicated in EpicStatsAdmin:
+    private String loadSetting( String name )
+    {
+        // Get saved config:
+        PluginSettings settings =
+                this.pluginSettingsFactory.createGlobalSettings();
+        String pluginNameSpace = ConfigResource.Config.class.getName();
+
+        String content = null;
+        try
+        {
+            content = settings.get(
+                    pluginNameSpace + name
+            ).toString();
+        }
+        catch ( NullPointerException e )
+        {
+            settings.put( pluginNameSpace + name, "" );
+        }
+
+        return content;
     }
 }

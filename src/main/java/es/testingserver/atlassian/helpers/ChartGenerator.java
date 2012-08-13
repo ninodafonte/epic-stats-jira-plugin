@@ -37,6 +37,8 @@ public class ChartGenerator {
                     helper.getImageMapName(),
                     params
             );
+
+
         }
         catch ( IOException e )
         {

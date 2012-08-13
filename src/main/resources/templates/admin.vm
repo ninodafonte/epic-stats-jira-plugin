@@ -4,6 +4,7 @@
     <meta name="decorator" content="atl.admin" />
     <meta name="application-base-url" content="$applicationProperties.getBaseUrl()">
     $webResourceManager.requireResource("es.testingserver.atlassian.epicstats:resources")
+    $webResourceManager.requireResource("es.testingserver.atlassian.epicstats:resourcesCss")
 </head>
 <body>
 <div id="aui-message-bar"></div>
@@ -62,9 +63,71 @@
             #end
         </select>
     </div>
-    <div class="field-group">
-        <label for="roadmapLabel">$i18n.getText("epicstats.admin.roadmap.label")</label>
-        <input type="text" id="roadmapLabel" name="roadmapLabel" value="$selRoadmapLabel">
+
+    <div class="module">
+        <div class="mod-header"><h3 class="toggle-title">Filters</h3></div>
+        <div class="mod-content">
+            <div class="field-group break-field-group">
+                <ul class="field-inline">
+                    <li>
+                        <label for="filterName1">$i18n.getText("epicstats.admin.filterName1.label")</label>
+                        <input type="text" id="filterName1" name="filterName1" value="$!selfilterName1">
+                    </li>
+                    <li>
+                        <label for="filterJql1">$i18n.getText("epicstats.admin.filterJql1.label")</label>
+                        <input type="text" id="filterJql1" name="filterJql1" value="$!selfilterJql1">
+                    </li>
+                </ul>
+            </div>
+            <div class="field-group break-field-group">
+                <ul class="field-inline">
+                    <li>
+                        <label for="filterName2">$i18n.getText("epicstats.admin.filterName2.label")</label>
+                        <input type="text" id="filterName2" name="filterName2" value="$!selfilterName2">
+                    </li>
+                    <li>
+                        <label for="filterJql2">$i18n.getText("epicstats.admin.filterJql2.label")</label>
+                        <input type="text" id="filterJql2" name="filterJql2" value="$!selfilterJql2">
+                    </li>
+                </ul>
+            </div>
+            <div class="field-group break-field-group">
+                <ul class="field-inline">
+                    <li>
+                        <label for="filterName3">$i18n.getText("epicstats.admin.filterName3.label")</label>
+                        <input type="text" id="filterName3" name="filterName3" value="$!selfilterName3">
+                    </li>
+                    <li>
+                        <label for="filterJql3">$i18n.getText("epicstats.admin.filterJql3.label")</label>
+                        <input type="text" id="filterJql3" name="filterJql3" value="$!selfilterJql3">
+                    </li>
+                </ul>
+            </div>
+            <div class="field-group break-field-group">
+                <ul class="field-inline">
+                    <li>
+                        <label for="filterName4">$i18n.getText("epicstats.admin.filterName4.label")</label>
+                        <input type="text" id="filterName4" name="filterName4" value="$!selfilterName4">
+                    </li>
+                    <li>
+                        <label for="filterJql4">$i18n.getText("epicstats.admin.filterJql4.label")</label>
+                        <input type="text" id="filterJql4" name="filterJql4" value="$!selfilterJql4">
+                    </li>
+                </ul>
+            </div>
+            <div class="field-group break-field-group">
+                <ul class="field-inline">
+                    <li>
+                        <label for="filterName5">$i18n.getText("epicstats.admin.filterName5.label")</label>
+                        <input type="text" id="filterName5" name="filterName5" value="$!selfilterName5">
+                    </li>
+                    <li>
+                        <label for="filterJql5">$i18n.getText("epicstats.admin.filterJql5.label")</label>
+                        <input type="text" id="filterJql5" name="filterJql5" value="$!selfilterJql5">
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
     <div>
         <input type="submit" value="$i18n.getText("epicstats.admin.save.label")" class="button">

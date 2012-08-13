@@ -42,3 +42,31 @@
     font-size: 1.1em;
     padding: 3px 7px 0px 0px;
 }
+
+.field-inline
+{
+    list-style-type: none;
+}
+
+.break-field-group
+{
+    padding: 0 0 5px 0px !important;
+}
+
+.field-inline li
+{
+    display: inline;
+}
+
+.field-inline li label
+{
+    float: none !important;
+    display: inline !important;
+    left: 0px !important;
+    line-height: 1 !important;
+    margin-right: 0px !important;
+    padding-top: 0px !important;
+    width: 130px !important;
+    text-align: right !important;
+    height: 17px !important;
+}
