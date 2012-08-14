@@ -38,7 +38,6 @@ public class ChartGenerator {
                     params
             );
 
-
         }
         catch ( IOException e )
         {

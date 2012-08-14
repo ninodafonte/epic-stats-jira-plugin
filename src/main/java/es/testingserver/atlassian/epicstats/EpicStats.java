@@ -12,13 +12,14 @@ import com.atlassian.jira.jql.builder.JqlClauseBuilder;
 import com.atlassian.jira.jql.builder.JqlQueryBuilder;
 import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.query.Query;
-import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.common.collect.Maps;
 import es.testingserver.atlassian.entities.Epic;
+import es.testingserver.atlassian.entities.EpicStatsConfig;
 import es.testingserver.atlassian.entities.Filter;
+import es.testingserver.atlassian.utils.SettingsReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,10 +46,8 @@ public class EpicStats extends HttpServlet{
     private double globalTotalStoryPoints = 0;
     private double globalBurnedStoryPoints = 0;
     private String filterJql = null;
-    private String project = null;
-    private String epicIssueType = null;
-    private String storyIssueType = null;
-    private String doneStatus = null;
+    private EpicStatsConfig epicStatsConfig;
+
     private String filtered = null;
     private static final String LIST_BROWSER_TEMPLATE = "/templates/list.vm";
     private final PluginSettingsFactory pluginSettingsFactory;
@@ -83,9 +82,10 @@ public class EpicStats extends HttpServlet{
         jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
 
         com.atlassian.query.Query query;
-        jqlClauseBuilder = jqlClauseBuilder.project( this.project ).
+        jqlClauseBuilder = jqlClauseBuilder.
+                project(this.epicStatsConfig.getProject()).
                 and().issueTypeIsStandard().
-                and().issueType().in( this.epicIssueType );
+                and().issueType().in( this.epicStatsConfig.getEpicIssueType() );
 
         if ( ( this.filtered != null ) && ( this.filterJql.length() > 0 ) )
         {
@@ -129,7 +129,10 @@ public class EpicStats extends HttpServlet{
 
 
     @SuppressWarnings("unchecked")
-    private List<Epic> processEpics( List<Issue> issues, HttpServletRequest req )
+    private List<Epic> processEpics (
+            List<Issue> issues,
+            HttpServletRequest req
+    )
     {
         User user = getCurrentUser(req);
         List<Epic> processedIssues = new ArrayList<Epic>();
@@ -151,10 +154,15 @@ public class EpicStats extends HttpServlet{
 
 
                 // JQL Clause:
-                com.atlassian.query.Query query = jqlClauseBuilder.project( this.project ).
+                com.atlassian.query.Query query = jqlClauseBuilder.
+                        project(this.epicStatsConfig.getProject()).
                         and().issueTypeIsStandard().
-                        and().issueType().in(this.storyIssueType).
-                        and().customField(epicField.getIdAsLong()).eq(epicLabel).
+                        and().issueType().in(
+                            this.epicStatsConfig.getStoryIssueType()
+                        ).
+                        and().customField(
+                            epicField.getIdAsLong()
+                        ).eq(epicLabel).
                         buildQuery();
 
                 PagerFilter pagerFilter = PagerFilter.getUnlimitedFilter();
@@ -165,7 +173,11 @@ public class EpicStats extends HttpServlet{
                 try
                 {
                     // Perform search results
-                    searchResults = searchService.search(user, query, pagerFilter);
+                    searchResults = searchService.search(
+                            user,
+                            query,
+                            pagerFilter
+                    );
                     result = searchResults.getIssues();
                 }
                 catch (SearchException e)
@@ -179,11 +191,16 @@ public class EpicStats extends HttpServlet{
                 List<Issue> stories = result;
                 for ( Issue story : stories )
                 {
-                    Double spValue = (Double) story.getCustomFieldValue( storyPoints );
+                    Double spValue = (Double) story.getCustomFieldValue(
+                            storyPoints
+                    );
+
                     if ( spValue != null )
                     {
                         totalStoryPoints += spValue;
-                        if ( story.getStatusObject().getName().equals( this.doneStatus ) )
+                        if ( story.getStatusObject().getName().equals(
+                                this.epicStatsConfig.getDoneStatus()
+                        ))
                         {
                             burnedStoryPoints += spValue;
                         }
@@ -216,6 +233,8 @@ public class EpicStats extends HttpServlet{
             HttpServletResponse resp
     ) throws ServletException, IOException
     {
+        this.epicStatsConfig = new EpicStatsConfig();
+
         // Configuration read from Admin Plugin Section in Jira:
         this.readPluginConfiguration( req );
 
@@ -226,7 +245,10 @@ public class EpicStats extends HttpServlet{
         // Set template context:
         Map<String, Object> context = Maps.newHashMap();
 
-        context.put( "cfEpic", epicField.getIdAsLong() );
+        if ( epicField != null )
+        {
+            context.put( "cfEpic", epicField.getIdAsLong() );
+        }
         context.put( "issues", processedEpics );
         context.put( "filtered", this.filtered );
         context.put( "filterJql", this.filterJql );
@@ -249,11 +271,24 @@ public class EpicStats extends HttpServlet{
         List<Filter> filters = new ArrayList<Filter>();
         String name, jql;
 
+        SettingsReader settings = new SettingsReader(
+                this.pluginSettingsFactory
+        );
+
         for ( int i = 1; i < 6; i++ )
         {
-            name = loadSetting(".filterName".concat(Integer.toString(i)));
-            jql = loadSetting(".filterJql".concat(Integer.toString(i)));
-            if ( (name != null) && (jql != null) && !name.isEmpty() && !jql.isEmpty() )
+            name = settings.loadSetting(
+                ".filterName".concat(Integer.toString(i))
+            );
+            jql = settings.loadSetting(
+                ".filterJql".concat(Integer.toString(i))
+            );
+
+            if (
+                    (name != null) &&
+                    (jql != null) &&
+                    !name.isEmpty() && !jql.isEmpty()
+            )
             {
                 Filter temp = new Filter();
                 temp.setName( name );
@@ -267,70 +302,40 @@ public class EpicStats extends HttpServlet{
 
     private void readPluginConfiguration( HttpServletRequest req )
     {
-        PluginSettings settings =
-                this.pluginSettingsFactory.createGlobalSettings();
+        SettingsReader settings = new SettingsReader(
+            this.pluginSettingsFactory
+        );
 
         CustomFieldManager customFieldManager =
                 ComponentAccessor.getCustomFieldManager();
 
-        String pluginNameSpace = ConfigResource.Config.class.getName();
         this.filtered = req.getParameter("filtered");
-
-        this.project = settings.get(
-                pluginNameSpace + ".project"
-        ).toString();
-
-        this.epicIssueType = settings.get(
-            pluginNameSpace + ".epicIssueType"
-        ).toString();
-
-        this.storyIssueType = settings.get(
-            pluginNameSpace + ".storyIssueType"
-        ).toString();
-
-        String storyPointsField = settings.get(
-            pluginNameSpace + ".storyPointsField"
-        ).toString();
-
-        String epicRelatedField = settings.get(
-            pluginNameSpace + ".epicField"
-        ).toString();
-
-        this.doneStatus = settings.get(
-            pluginNameSpace + ".doneStatus"
-        ).toString();
-
+        this.epicStatsConfig.setProject( settings.loadSetting( ".project" ) );
+        this.epicStatsConfig.setEpicIssueType(
+            settings.loadSetting(".epicIssueType")
+        );
+        this.epicStatsConfig.setStoryIssueType(
+            settings.loadSetting(".storyIssueType")
+        );
+        this.epicStatsConfig.setDoneStatus(
+            settings.loadSetting(".doneStatus")
+        );
+        String storyPointsField = settings.loadSetting(".storyPointsField");
+        String epicRelatedField = settings.loadSetting(".epicField");
         this.filterJql = req.getParameter( "filterJql" );
 
-        this.epicField = customFieldManager.getCustomFieldObjectByName(
-            epicRelatedField
-        );
-
-        this.storyPoints = customFieldManager.getCustomFieldObjectByName(
-            storyPointsField
-        );
-    }
-
-    // TODO: Refactor - Duplicated in EpicStatsAdmin:
-    private String loadSetting( String name )
-    {
-        // Get saved config:
-        PluginSettings settings =
-                this.pluginSettingsFactory.createGlobalSettings();
-        String pluginNameSpace = ConfigResource.Config.class.getName();
-
-        String content = null;
-        try
+        if ( !epicRelatedField.isEmpty() )
         {
-            content = settings.get(
-                    pluginNameSpace + name
-            ).toString();
-        }
-        catch ( NullPointerException e )
-        {
-            settings.put( pluginNameSpace + name, "" );
+            this.epicField = customFieldManager.getCustomFieldObjectByName(
+                    epicRelatedField
+            );
         }
 
-        return content;
+        if ( !storyPointsField.isEmpty() )
+        {
+            this.storyPoints = customFieldManager.getCustomFieldObjectByName(
+                    storyPointsField
+            );
+        }
     }
 }

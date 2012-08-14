@@ -6,11 +6,11 @@ import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.sal.api.auth.LoginUriProvider;
-import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.common.collect.Maps;
+import es.testingserver.atlassian.utils.SettingsReader;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -68,53 +68,33 @@ public class EpicStatsAdmin extends HttpServlet
         List<Status> issueStatuses = new ArrayList<Status>(ComponentAccessor.getConstantsManager().getStatusObjects());
 
         // Set vars for template:
+        SettingsReader settings = new SettingsReader( this.pluginSettingsFactory );
+
         Map<String, Object> context = Maps.newHashMap();
         context.put( "projects", projects );
         context.put( "issueTypes", issueTypes );
         context.put( "issueFields", issueFields );
         context.put( "issueStatuses", issueStatuses );
 
-        context.put( "selProject", loadSetting( ".project" ) );
-        context.put( "selEpicIssueType", loadSetting(".epicIssueType") );
-        context.put( "selStoryIssueType", loadSetting(".storyIssueType") );
-        context.put( "selStoryPointsField", loadSetting(".storyPointsField") );
-        context.put( "selEpicField", loadSetting(".epicField") );
-        context.put( "selDoneStatus", loadSetting(".doneStatus") );
-        context.put( "selfilterName1", loadSetting(".filterName1") );
-        context.put( "selfilterName2", loadSetting(".filterName2") );
-        context.put( "selfilterName3", loadSetting(".filterName3") );
-        context.put( "selfilterName4", loadSetting(".filterName4") );
-        context.put( "selfilterName5", loadSetting(".filterName5") );
-        context.put( "selfilterJql1", loadSetting(".filterJql1") );
-        context.put( "selfilterJql1", loadSetting(".filterJql2") );
-        context.put( "selfilterJql1", loadSetting(".filterJql3") );
-        context.put( "selfilterJql1", loadSetting(".filterJql4") );
-        context.put( "selfilterJql1", loadSetting(".filterJql5") );
+        context.put( "selProject", settings.loadSetting( ".project" ) );
+        context.put( "selEpicIssueType", settings.loadSetting(".epicIssueType") );
+        context.put( "selStoryIssueType", settings.loadSetting(".storyIssueType") );
+        context.put( "selStoryPointsField", settings.loadSetting(".storyPointsField") );
+        context.put( "selEpicField", settings.loadSetting(".epicField") );
+        context.put( "selDoneStatus", settings.loadSetting(".doneStatus") );
+        context.put( "selfilterName1", settings.loadSetting(".filterName1") );
+        context.put( "selfilterName2", settings.loadSetting(".filterName2") );
+        context.put( "selfilterName3", settings.loadSetting(".filterName3") );
+        context.put( "selfilterName4", settings.loadSetting(".filterName4") );
+        context.put( "selfilterName5", settings.loadSetting(".filterName5") );
+        context.put( "selfilterJql1", settings.loadSetting(".filterJql1") );
+        context.put( "selfilterJql2", settings.loadSetting(".filterJql2") );
+        context.put( "selfilterJql3", settings.loadSetting(".filterJql3") );
+        context.put( "selfilterJql4", settings.loadSetting(".filterJql4") );
+        context.put( "selfilterJql5", settings.loadSetting(".filterJql5") );
 
         response.setContentType("text/html;charset=utf-8");
         renderer.render( ADMIN_TEMPLATE, context, response.getWriter());
-    }
-
-    private String loadSetting( String name )
-    {
-        // Get saved config:
-        PluginSettings settings =
-                this.pluginSettingsFactory.createGlobalSettings();
-        String pluginNameSpace = ConfigResource.Config.class.getName();
-
-        String content = null;
-        try
-        {
-            content = settings.get(
-                    pluginNameSpace + name
-            ).toString();
-        }
-        catch ( NullPointerException e )
-        {
-            settings.put( pluginNameSpace + name, "" );
-        }
-
-        return content;
     }
 
     private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException
