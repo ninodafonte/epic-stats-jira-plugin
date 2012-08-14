@@ -6,8 +6,10 @@ import com.atlassian.jira.charts.jfreechart.PieChartGenerator;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.util.I18nHelper;
 import com.google.common.collect.Maps;
+import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.Map;
 
@@ -25,6 +27,12 @@ public class ChartGenerator {
             dataset.setValue( "Done", burnedSp );
             I18nHelper i18nBean = ComponentAccessor.getJiraAuthenticationContext().getI18nHelper();
             final ChartHelper helper = new PieChartGenerator(dataset, i18nBean).generateChart();
+
+            PiePlot plot = (PiePlot) helper.getChart().getPlot();
+
+            plot.setSectionPaint( "To do", new Color( 255, 85, 85 ) );
+            plot.setSectionPaint( "Done", new Color( 0, 164, 128 ) );
+            plot.setNoDataMessage("No data to display");
             helper.generate(400, 100);
 
             params.put("chart", helper.getLocation());
@@ -37,7 +45,6 @@ public class ChartGenerator {
                     helper.getImageMapName(),
                     params
             );
-
         }
         catch ( IOException e )
         {
