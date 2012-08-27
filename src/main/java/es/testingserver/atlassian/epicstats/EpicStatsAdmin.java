@@ -4,12 +4,12 @@ import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.issue.status.Status;
-import com.atlassian.jira.project.Project;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.common.collect.Maps;
+import es.testingserver.atlassian.utils.EncodingUtil;
 import es.testingserver.atlassian.utils.SettingsReader;
 
 import javax.servlet.ServletException;
@@ -53,9 +53,6 @@ public class EpicStatsAdmin extends HttpServlet
             return;
         }
 
-        // Get projects from system:
-        List<Project> projects = ComponentAccessor.getProjectManager().getProjectObjects();
-
         // Get issue types:
         List<IssueType> issueTypes = new ArrayList<IssueType>(
             ComponentAccessor.getConstantsManager().getAllIssueTypeObjects()
@@ -71,12 +68,10 @@ public class EpicStatsAdmin extends HttpServlet
         SettingsReader settings = new SettingsReader( this.pluginSettingsFactory );
 
         Map<String, Object> context = Maps.newHashMap();
-        context.put( "projects", projects );
         context.put( "issueTypes", issueTypes );
         context.put( "issueFields", issueFields );
         context.put( "issueStatuses", issueStatuses );
 
-        context.put( "selProject", settings.loadSetting( ".project" ) );
         context.put( "selEpicIssueType", settings.loadSetting(".epicIssueType") );
         context.put( "selStoryIssueType", settings.loadSetting(".storyIssueType") );
         context.put( "selStoryPointsField", settings.loadSetting(".storyPointsField") );
@@ -87,11 +82,21 @@ public class EpicStatsAdmin extends HttpServlet
         context.put( "selfilterName3", settings.loadSetting(".filterName3") );
         context.put( "selfilterName4", settings.loadSetting(".filterName4") );
         context.put( "selfilterName5", settings.loadSetting(".filterName5") );
-        context.put( "selfilterJql1", settings.loadSetting(".filterJql1") );
-        context.put( "selfilterJql2", settings.loadSetting(".filterJql2") );
-        context.put( "selfilterJql3", settings.loadSetting(".filterJql3") );
-        context.put( "selfilterJql4", settings.loadSetting(".filterJql4") );
-        context.put( "selfilterJql5", settings.loadSetting(".filterJql5") );
+        context.put( "selfilterJql1",
+                EncodingUtil.decodeURIComponent(settings.loadSetting(".filterJql1"))
+        );
+        context.put( "selfilterJql2",
+                EncodingUtil.decodeURIComponent(settings.loadSetting(".filterJql2"))
+        );
+        context.put( "selfilterJql3",
+                EncodingUtil.decodeURIComponent(settings.loadSetting(".filterJql3"))
+        );
+        context.put( "selfilterJql4",
+                EncodingUtil.decodeURIComponent(settings.loadSetting(".filterJql4"))
+        );
+        context.put( "selfilterJql5",
+                EncodingUtil.decodeURIComponent(settings.loadSetting(".filterJql5"))
+        );
 
         response.setContentType("text/html;charset=utf-8");
         renderer.render( ADMIN_TEMPLATE, context, response.getWriter());

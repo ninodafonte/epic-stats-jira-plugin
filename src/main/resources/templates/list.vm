@@ -13,7 +13,7 @@
                 #if($issues.size()==0)
                     No Epics created.
                 #else
-                    Epic Dashboard#if ( ( $filtered ) && ( "$!filterLabel" != "" ) )<strong>: $filterLabel</strong>#end
+                    Epic Dashboard#if ( ( $filtered ) && ( "$!filterName" != "" ) )<strong>: $filterName</strong>#end
                 #end
             </h1>
 
@@ -22,7 +22,7 @@
                 <ul class="aui-dropdown aui-list-section">
                     <li class="aui-list-item"><a class="aui-list-item-link" href="$applicationProperties.getBaseUrl()/plugins/servlet/epicstats">All</a></li>
                     #foreach( $filter in $filters )
-                        <li class="aui-list-item"><a class="aui-list-item-link" href="$applicationProperties.getBaseUrl()/plugins/servlet/epicstats?filtered=on&filterJql=$filter.getJql()">$filter.getName()</a></li>
+                        <li class="aui-list-item"><a class="aui-list-item-link" href="$applicationProperties.getBaseUrl()/plugins/servlet/epicstats?filtered=on&filterName=$filter.getName()&filterJql=$filter.getJql()">$filter.getName()</a></li>
                     #end
                 </ul>
             </div>

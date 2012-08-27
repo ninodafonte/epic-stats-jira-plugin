@@ -5,6 +5,13 @@
     <description>${project.description}</description>
     <version>${project.version}</version>
     <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    <!-- Support for the following marketing assets has been implemented -->
+    <param name="plugin-icon">images/pluginIcon.gif</param>
+    <param name="plugin-logo">images/pluginLogo.gif</param>
+    <!-- Support for the following marketing assets will be implemented soon -->
+    <param name="plugin-banner">images/pluginBanner.gif</param>
+    <param name="vendor-icon">images/vendorIcon.gif</param>
+    <param name="vendor-logo">images/vendorLogo.gif</param>
   </plugin-info>
   <resource type="i18n" name="i18n" location="es.testingserver.atlassian.epicstats.epicstats"/>
 

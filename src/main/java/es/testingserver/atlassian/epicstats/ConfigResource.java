@@ -42,7 +42,6 @@ public class ConfigResource
             public Object doInTransaction() {
                 PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
                 EpicStatsConfig epicStatsConfig = new EpicStatsConfig();
-                epicStatsConfig.setProject((String) settings.get(EpicStatsConfig.class.getName() + ".project"));
                 epicStatsConfig.setEpicIssueType((String) settings.get(EpicStatsConfig.class.getName() + ".epicIssueType"));
                 epicStatsConfig.setStoryIssueType((String) settings.get(EpicStatsConfig.class.getName() + ".storyIssueType"));
                 epicStatsConfig.setStoryPointsField((String) settings.get(EpicStatsConfig.class.getName() + ".storyPointsField"));
@@ -79,7 +78,6 @@ public class ConfigResource
             public Object doInTransaction()
             {
                 PluginSettings pluginSettings = pluginSettingsFactory.createGlobalSettings();
-                pluginSettings.put(EpicStatsConfig.class.getName() + ".project", epicStatsConfig.getProject());
                 pluginSettings.put(EpicStatsConfig.class.getName()  +".epicIssueType", epicStatsConfig.getEpicIssueType());
                 pluginSettings.put(EpicStatsConfig.class.getName()  +".storyIssueType", epicStatsConfig.getStoryIssueType());
                 pluginSettings.put(EpicStatsConfig.class.getName()  +".storyPointsField", epicStatsConfig.getStoryPointsField());

@@ -10,15 +10,6 @@
 <div id="aui-message-bar"></div>
 <form id="admin" class="aui">
     <div class="field-group">
-        <label for="project">$i18n.getText("epicstats.admin.project.label")</label>
-        <select id="project" name="project">
-            <option value="Choose one">Choose one</option>
-            #foreach( $project in $projects )
-                <option value="$project.getKey()" #if ($selProject == $project.getKey() ) selected="selected" #end>$project.getName()</option>
-            #end
-        </select>
-    </div>
-    <div class="field-group">
         <label for="epicIssueType">$i18n.getText("epicstats.admin.epic.label")</label>
         <select id="epicIssueType" name="epicIssueType">
             <option value="Choose one">Choose one</option>

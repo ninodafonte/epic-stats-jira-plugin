@@ -6,17 +6,16 @@ AJS.toInit(function() {
             url: baseUrl + "/rest/epicstats-admin/1.0/",
             type: "PUT",
             contentType: "application/json",
-            data: '{ "project": "' + AJS.$("#project").attr("value") + '"' +
-                ', "epicIssueType": "' +  AJS.$("#epicIssueType").attr("value") + '"' +
+            data: '{ "epicIssueType": "' +  AJS.$("#epicIssueType").attr("value") + '"' +
                 ', "storyIssueType": "' +  AJS.$("#storyIssueType").attr("value") + '"' +
                 ', "storyPointsField": "' +  AJS.$("#storyPointsField").attr("value") + '"' +
                 ', "epicField": "' +  AJS.$("#epicField").attr("value") + '"' +
                 ', "doneStatus": "' +  AJS.$("#doneStatus").attr("value") + '"' +
-                ', "filterJql1": "' +  AJS.$("#filterJql1").attr("value") + '"' +
-                ', "filterJql2": "' +  AJS.$("#filterJql2").attr("value") + '"' +
-                ', "filterJql3": "' +  AJS.$("#filterJql3").attr("value") + '"' +
-                ', "filterJql4": "' +  AJS.$("#filterJql4").attr("value") + '"' +
-                ', "filterJql5": "' +  AJS.$("#filterJql5").attr("value") + '"' +
+                ', "filterJql1": "' +  encodeURIComponent(AJS.$("#filterJql1").attr("value")) + '"' +
+                ', "filterJql2": "' +  encodeURIComponent(AJS.$("#filterJql2").attr("value")) + '"' +
+                ', "filterJql3": "' +  encodeURIComponent(AJS.$("#filterJql3").attr("value")) + '"' +
+                ', "filterJql4": "' +  encodeURIComponent(AJS.$("#filterJql4").attr("value")) + '"' +
+                ', "filterJql5": "' +  encodeURIComponent(AJS.$("#filterJql5").attr("value")) + '"' +
                 ', "filterName1": "' +  AJS.$("#filterName1").attr("value") + '"' +
                 ', "filterName2": "' +  AJS.$("#filterName2").attr("value") + '"' +
                 ', "filterName3": "' +  AJS.$("#filterName3").attr("value") + '"' +

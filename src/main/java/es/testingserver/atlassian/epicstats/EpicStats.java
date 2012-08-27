@@ -19,6 +19,7 @@ import com.google.common.collect.Maps;
 import es.testingserver.atlassian.entities.Epic;
 import es.testingserver.atlassian.entities.EpicStatsConfig;
 import es.testingserver.atlassian.entities.Filter;
+import es.testingserver.atlassian.utils.EncodingUtil;
 import es.testingserver.atlassian.utils.SettingsReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,7 @@ public class EpicStats extends HttpServlet{
     private double globalTotalStoryPoints = 0;
     private double globalBurnedStoryPoints = 0;
     private String filterJql = null;
+    private String filterName = null;
     private EpicStatsConfig epicStatsConfig;
 
     private String filtered = null;
@@ -83,14 +85,13 @@ public class EpicStats extends HttpServlet{
 
         com.atlassian.query.Query query;
         jqlClauseBuilder = jqlClauseBuilder.
-                project(this.epicStatsConfig.getProject()).
-                and().issueTypeIsStandard().
+                issueTypeIsStandard().
                 and().issueType().in( this.epicStatsConfig.getEpicIssueType() );
 
         if ( ( this.filtered != null ) && ( this.filterJql.length() > 0 ) )
         {
             // JQL Filter Clause:
-            String jqlQuery = this.filterJql;
+            String jqlQuery = EncodingUtil.decodeURIComponent( this.filterJql );
             SearchService.ParseResult parseResult = searchService.parseQuery(
                     user,
                     jqlQuery
@@ -155,8 +156,7 @@ public class EpicStats extends HttpServlet{
 
                 // JQL Clause:
                 com.atlassian.query.Query query = jqlClauseBuilder.
-                        project(this.epicStatsConfig.getProject()).
-                        and().issueTypeIsStandard().
+                        issueTypeIsStandard().
                         and().issueType().in(
                             this.epicStatsConfig.getStoryIssueType()
                         ).
@@ -251,6 +251,7 @@ public class EpicStats extends HttpServlet{
         }
         context.put( "issues", processedEpics );
         context.put( "filtered", this.filtered );
+        context.put( "filterName", this.filterName );
         context.put( "filterJql", this.filterJql );
         context.put( "totalStoryPoints", globalTotalStoryPoints );
         context.put( "burnedStoryPoints", globalBurnedStoryPoints );
@@ -310,7 +311,6 @@ public class EpicStats extends HttpServlet{
                 ComponentAccessor.getCustomFieldManager();
 
         this.filtered = req.getParameter("filtered");
-        this.epicStatsConfig.setProject( settings.loadSetting( ".project" ) );
         this.epicStatsConfig.setEpicIssueType(
             settings.loadSetting(".epicIssueType")
         );
@@ -323,6 +323,7 @@ public class EpicStats extends HttpServlet{
         String storyPointsField = settings.loadSetting(".storyPointsField");
         String epicRelatedField = settings.loadSetting(".epicField");
         this.filterJql = req.getParameter( "filterJql" );
+        this.filterName = req.getParameter( "filterName" );
 
         if ( !epicRelatedField.isEmpty() )
         {

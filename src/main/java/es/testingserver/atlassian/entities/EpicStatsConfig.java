@@ -7,9 +7,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public final class EpicStatsConfig
 {
     @XmlElement
-    private String project;
-
-    @XmlElement
     private String epicIssueType;
 
     @XmlElement
@@ -53,14 +50,6 @@ public final class EpicStatsConfig
 
     @XmlElement
     private String filterJql5;
-
-    public String getProject() {
-        return project;
-    }
-
-    public void setProject(String project) {
-        this.project = project;
-    }
 
     public String getEpicIssueType() {
         return epicIssueType;
