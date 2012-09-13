@@ -1,4 +1,4 @@
-package es.testingserver.atlassian.utils;
+package com.aboutcoders.atlassian.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

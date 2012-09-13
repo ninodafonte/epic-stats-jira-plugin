@@ -13,7 +13,7 @@
     <param name="vendor-icon">images/vendorIcon.gif</param>
     <param name="vendor-logo">images/vendorLogo.gif</param>
   </plugin-info>
-  <resource type="i18n" name="i18n" location="es.testingserver.atlassian.epicstats.epicstats"/>
+  <resource type="i18n" name="i18n" location="com.aboutcoders.atlassian.epicstats.epicstats"/>
 
     <web-item name="Epic Stats" i18n-name-key="epic-stats.name" key="epic-stats" section="system.top.navigation.bar" weight="1000">
         <description key="epic-stats.description">Epic Stats Plugin</description>
@@ -43,12 +43,12 @@
 
     <template-context-item key="applicationPropertiesContextItem" component-ref="applicationProperties" context-key="applicationProperties" name="Application Properties Context Item"/>
 
-    <servlet name="Epic Stats" i18n-name-key="epic-stats-servlet.name" key="epic-stats-servlet" class="es.testingserver.atlassian.epicstats.EpicStats">
+    <servlet name="Epic Stats" i18n-name-key="epic-stats-servlet.name" key="epic-stats-servlet" class="com.aboutcoders.atlassian.epicstats.EpicStats">
         <description key="epic-stats-servlet.description">The Epic Stats Plugin</description>
         <url-pattern>/epicstats</url-pattern>
     </servlet>
 
-    <servlet name="Epic Stats Admin" i18n-name-key="epic-stats-admin-servlet.name" key="epic-stats-admin-servlet" class="es.testingserver.atlassian.epicstats.EpicStatsAdmin">
+    <servlet name="Epic Stats Admin" i18n-name-key="epic-stats-admin-servlet.name" key="epic-stats-admin-servlet" class="com.aboutcoders.atlassian.epicstats.EpicStatsAdmin">
         <description key="epic-stats-admin-servlet.description">The Epic Stats Admin Plugin</description>
         <url-pattern>/epicstats/admin</url-pattern>
     </servlet>

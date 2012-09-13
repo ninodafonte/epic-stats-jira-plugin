@@ -1,4 +1,4 @@
-package es.testingserver.atlassian.epicstats;
+package com.aboutcoders.atlassian.epicstats;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.issue.search.SearchService;
@@ -16,11 +16,11 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.common.collect.Maps;
-import es.testingserver.atlassian.entities.Epic;
-import es.testingserver.atlassian.entities.EpicStatsConfig;
-import es.testingserver.atlassian.entities.Filter;
-import es.testingserver.atlassian.utils.EncodingUtil;
-import es.testingserver.atlassian.utils.SettingsReader;
+import com.aboutcoders.atlassian.entities.Epic;
+import com.aboutcoders.atlassian.entities.EpicStatsConfig;
+import com.aboutcoders.atlassian.entities.Filter;
+import com.aboutcoders.atlassian.utils.EncodingUtil;
+import com.aboutcoders.atlassian.utils.SettingsReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

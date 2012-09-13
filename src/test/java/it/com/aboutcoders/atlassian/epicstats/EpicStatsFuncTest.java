@@ -1,4 +1,4 @@
-package it.es.testingserver.atlassian.epicstats;
+package it.com.aboutcoders.atlassian.epicstats;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;

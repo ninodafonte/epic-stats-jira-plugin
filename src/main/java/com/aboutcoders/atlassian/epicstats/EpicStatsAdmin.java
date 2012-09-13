@@ -1,4 +1,4 @@
-package es.testingserver.atlassian.epicstats;
+package com.aboutcoders.atlassian.epicstats;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.fields.CustomField;
@@ -9,8 +9,8 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.common.collect.Maps;
-import es.testingserver.atlassian.utils.EncodingUtil;
-import es.testingserver.atlassian.utils.SettingsReader;
+import com.aboutcoders.atlassian.utils.EncodingUtil;
+import com.aboutcoders.atlassian.utils.SettingsReader;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

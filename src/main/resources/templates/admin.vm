@@ -3,8 +3,8 @@
     <title>$i18n.getText("epicstats.admin.label")</title>
     <meta name="decorator" content="atl.admin" />
     <meta name="application-base-url" content="$applicationProperties.getBaseUrl()">
-    $webResourceManager.requireResource("es.testingserver.atlassian.epicstats:resources")
-    $webResourceManager.requireResource("es.testingserver.atlassian.epicstats:resourcesCss")
+    $webResourceManager.requireResource("com.aboutcoders.atlassian.epicstats:resources")
+    $webResourceManager.requireResource("com.aboutcoders.atlassian.epicstats:resourcesCss")
 </head>
 <body>
 <div id="aui-message-bar"></div>

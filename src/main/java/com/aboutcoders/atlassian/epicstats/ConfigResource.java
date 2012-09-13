@@ -1,11 +1,11 @@
-package es.testingserver.atlassian.epicstats;
+package com.aboutcoders.atlassian.epicstats;
 
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserManager;
-import es.testingserver.atlassian.entities.EpicStatsConfig;
+import com.aboutcoders.atlassian.entities.EpicStatsConfig;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;

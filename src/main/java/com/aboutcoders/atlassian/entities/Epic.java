@@ -1,7 +1,7 @@
-package es.testingserver.atlassian.entities;
+package com.aboutcoders.atlassian.entities;
 
 import com.atlassian.jira.charts.Chart;
-import es.testingserver.atlassian.helpers.ChartGenerator;
+import com.aboutcoders.atlassian.helpers.ChartGenerator;
 
 import java.util.Map;
 

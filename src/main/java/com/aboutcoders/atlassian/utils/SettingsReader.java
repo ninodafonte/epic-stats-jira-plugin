@@ -1,9 +1,9 @@
-package es.testingserver.atlassian.utils;
+package com.aboutcoders.atlassian.utils;
 
 
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import es.testingserver.atlassian.entities.EpicStatsConfig;
+import com.aboutcoders.atlassian.entities.EpicStatsConfig;
 
 public class SettingsReader {
 

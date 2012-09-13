@@ -1,4 +1,4 @@
-package es.testingserver.atlassian.entities;
+package com.aboutcoders.atlassian.entities;
 
 public class Filter
 {

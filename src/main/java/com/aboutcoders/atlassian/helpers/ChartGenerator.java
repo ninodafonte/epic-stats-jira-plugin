@@ -1,4 +1,4 @@
-package es.testingserver.atlassian.helpers;
+package com.aboutcoders.atlassian.helpers;
 
 import com.atlassian.jira.charts.Chart;
 import com.atlassian.jira.charts.jfreechart.ChartHelper;

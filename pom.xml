@@ -2,13 +2,19 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>es.testingserver.atlassian</groupId>
+    <groupId>com.aboutcoders.atlassian</groupId>
     <artifactId>epicstats</artifactId>
     <version>1.0</version>
     <organization>
-        <name>Splendia Operations</name>
-        <url>http://www.splendia.com/</url>
+        <name>AboutCoders.com</name>
     </organization>
+    <developers>
+        <developer>
+            <id>nonainobcn</id>
+            <name>Nino Dafonte</name>
+            <email>nino.dafonte@aboutcoders.com</email>
+        </developer>
+    </developers>
     <name>Epic Dashboard</name>
     <description>This is the Epic DashBoard plugin for Atlassian JIRA.</description>
     <packaging>atlassian-plugin</packaging>

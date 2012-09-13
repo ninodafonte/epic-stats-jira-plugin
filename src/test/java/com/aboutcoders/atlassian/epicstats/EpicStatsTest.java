@@ -1,4 +1,4 @@
-package es.testingserver.atlassian.epicstats;
+package com.aboutcoders.atlassian.epicstats;
 
 import org.junit.Test;
 
