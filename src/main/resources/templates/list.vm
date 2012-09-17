@@ -27,6 +27,10 @@
                 </ul>
             </div>
 
+            <div id="epic-done-filter">
+                <input type="checkbox" checked="checked" name="hideDoneEpics" id="hideDoneEpics"><label for="hideDoneEpics"> Hide 100% Done Epics</label>
+            </div>
+
             <div class="module">
                 <div class="mod-header"><h3 class="toggle-title">Totals</h3></div>
                 <div class="mod-content">
@@ -52,7 +56,7 @@
         #if ($issues.size() > 0)
             <div class="issues">
                 #foreach( $issue in $issues )
-                    <div class="content-body aui-panel epic-fixed-width">
+                    <div class="content-body aui-panel epic-fixed-width #if ( $issue.getPercentComplete() == 100 )done#end">
                         <div>
                             <h2><a class="lozenge" href="$applicationProperties.getBaseUrl()/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=cf%5B$cfEpic%5D+%3D+$issue.getKey()" title="$issue.getKey()"><span>$issue.getKey()</span></a>: <span class="black-text">$issue.getSummary()</span></h2>
                         </div>
