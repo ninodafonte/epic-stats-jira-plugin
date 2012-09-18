@@ -1,4 +1,4 @@
-var ViewModel = new Object();
+var ViewModel = {};
 
 ViewModel.hideEpicsDone = function () {
     AJS.$(".done").hide();

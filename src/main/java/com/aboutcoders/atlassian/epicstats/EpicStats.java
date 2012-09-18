@@ -37,10 +37,10 @@ import java.util.Map;
 
 public class EpicStats extends HttpServlet{
     private static final Logger log = LoggerFactory.getLogger(EpicStats.class);
-    private SearchService searchService;
-    private UserManager userManager;
-    private TemplateRenderer templateRenderer;
-    private com.atlassian.jira.user.util.UserManager jiraUserManager;
+    private final SearchService searchService;
+    private final UserManager userManager;
+    private final TemplateRenderer templateRenderer;
+    private final com.atlassian.jira.user.util.UserManager jiraUserManager;
     private JqlClauseBuilder jqlClauseBuilder = null;
     private CustomField epicField = null;
     private CustomField storyPoints = null;

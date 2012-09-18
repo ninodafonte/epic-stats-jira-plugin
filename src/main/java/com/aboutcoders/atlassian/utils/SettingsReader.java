@@ -7,7 +7,7 @@ import com.aboutcoders.atlassian.entities.EpicStatsConfig;
 
 public class SettingsReader {
 
-    protected PluginSettingsFactory pluginSettings;
+    private final PluginSettingsFactory pluginSettings;
 
     public SettingsReader( PluginSettingsFactory pluginSettings )
     {

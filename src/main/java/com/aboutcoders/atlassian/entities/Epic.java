@@ -7,11 +7,11 @@ import java.util.Map;
 
 public class Epic
 {
-    protected String _summary;
-    protected String _key;
-    protected double _totalStoryPoints;
-    protected double _burnedStoryPoints;
-    protected Map<String, Object> chartParams = null;
+    private String _summary;
+    private String _key;
+    private double _totalStoryPoints;
+    private double _burnedStoryPoints;
+    private Map<String, Object> chartParams = null;
 
     public String getSummary() {
         return _summary;

@@ -27,7 +27,7 @@ public class EncodingUtil
             return null;
         }
 
-        String result = null;
+        String result;
 
         try
         {
@@ -53,7 +53,7 @@ public class EncodingUtil
      */
     public static String encodeURIComponent(String s)
     {
-        String result = null;
+        String result;
 
         try
         {

@@ -16,9 +16,9 @@ import static org.junit.Assert.*;
 
 public class EpicStatsFuncTest {
 
-    HttpClient httpClient;
-    String baseUrl;
-    String servletUrl;
+    private HttpClient httpClient;
+    private String baseUrl;
+    private String servletUrl;
 
     @Before
     public void setup() {

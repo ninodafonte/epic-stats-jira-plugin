@@ -73,20 +73,24 @@
                         <div class="clear">
                             <table class="aui">
                                 <thead>
-                                    <th>Total Story Points</th>
-                                    <th>Burned Story Points</th>
-                                    <th>Complete</th>
+                                    <tr>
+                                        <th>Total Story Points</th>
+                                        <th>Burned Story Points</th>
+                                        <th>Complete</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                    <td>
-                                        $issue.getTotalStoryPoints()
-                                    </td>
-                                    <td>
-                                        $issue.getBurnedStoryPoints()
-                                    </td>
-                                    <td>
-                                        $issue.getPercentComplete() %
-                                    </td>
+                                    <tr>
+                                        <td>
+                                            $issue.getTotalStoryPoints()
+                                        </td>
+                                        <td>
+                                            $issue.getBurnedStoryPoints()
+                                        </td>
+                                        <td>
+                                            $issue.getPercentComplete() %
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/")
-public class ConfigResource
+class ConfigResource
 {
     private final UserManager userManager;
     private final PluginSettingsFactory pluginSettingsFactory;

@@ -17,7 +17,7 @@ public class ChartGenerator {
 
     public static Chart getChart( double totalSp, double burnedSp )
     {
-        Chart chart = null;
+        Chart chart;
 
         try
         {
